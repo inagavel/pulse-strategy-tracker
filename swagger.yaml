@@ -1,0 +1,923 @@
+
+openapi: 3.0.3
+info:
+  title: Sistema de Gestão de Performance API
+  description: API para sistema de gestão de performance, OKRs, tarefas e colaboradores
+  version: 1.0.0
+  contact:
+    name: Equipe de Desenvolvimento
+    email: dev@empresa.com
+
+servers:
+  - url: https://api.empresa.com/v1
+    description: Servidor de Produção
+  - url: https://api-dev.empresa.com/v1
+    description: Servidor de Desenvolvimento
+
+tags:
+  - name: Colaboradores
+    description: Gestão de colaboradores
+  - name: Avaliações
+    description: Avaliações de performance
+  - name: OKRs
+    description: Objectives and Key Results
+  - name: Tarefas
+    description: Gestão de tarefas
+  - name: Competências
+    description: Gestão de competências
+  - name: Relatórios
+    description: Geração de relatórios
+  - name: Dashboard
+    description: Dados do dashboard
+
+paths:
+  # COLABORADORES
+  /employees:
+    get:
+      tags:
+        - Colaboradores
+      summary: Listar todos os colaboradores
+      parameters:
+        - name: department
+          in: query
+          description: Filtrar por departamento
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Número da página
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Itens por página
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Lista de colaboradores
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Employee'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  totalPages:
+                    type: integer
+
+    post:
+      tags:
+        - Colaboradores
+      summary: Criar novo colaborador
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmployeeRequest'
+      responses:
+        '201':
+          description: Colaborador criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '400':
+          description: Dados inválidos
+
+  /employees/{id}:
+    get:
+      tags:
+        - Colaboradores
+      summary: Obter colaborador por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dados do colaborador
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '404':
+          description: Colaborador não encontrado
+
+    put:
+      tags:
+        - Colaboradores
+      summary: Atualizar colaborador
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmployeeRequest'
+      responses:
+        '200':
+          description: Colaborador atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+
+    delete:
+      tags:
+        - Colaboradores
+      summary: Remover colaborador
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Colaborador removido com sucesso
+
+  # AVALIAÇÕES
+  /evaluations:
+    get:
+      tags:
+        - Avaliações
+      summary: Listar avaliações
+      parameters:
+        - name: employeeId
+          in: query
+          description: Filtrar por ID do colaborador
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filtrar por status
+          schema:
+            type: string
+            enum: [pending, in_progress, completed]
+      responses:
+        '200':
+          description: Lista de avaliações
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evaluation'
+
+    post:
+      tags:
+        - Avaliações
+      summary: Criar nova avaliação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEvaluationRequest'
+      responses:
+        '201':
+          description: Avaliação criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluation'
+
+  /evaluations/{id}:
+    get:
+      tags:
+        - Avaliações
+      summary: Obter avaliação por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dados da avaliação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluation'
+
+    put:
+      tags:
+        - Avaliações
+      summary: Atualizar avaliação
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEvaluationRequest'
+      responses:
+        '200':
+          description: Avaliação atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluation'
+
+  # OKRs
+  /okrs:
+    get:
+      tags:
+        - OKRs
+      summary: Listar OKRs
+      parameters:
+        - name: department
+          in: query
+          description: Filtrar por departamento
+          schema:
+            type: string
+        - name: quarter
+          in: query
+          description: Filtrar por trimestre
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de OKRs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OKR'
+
+    post:
+      tags:
+        - OKRs
+      summary: Criar novo OKR
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOKRRequest'
+      responses:
+        '201':
+          description: OKR criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OKR'
+
+  # TAREFAS
+  /tasks:
+    get:
+      tags:
+        - Tarefas
+      summary: Listar tarefas
+      parameters:
+        - name: assigneeId
+          in: query
+          description: Filtrar por responsável
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filtrar por status
+          schema:
+            type: string
+            enum: [todo, in_progress, done]
+      responses:
+        '200':
+          description: Lista de tarefas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+    post:
+      tags:
+        - Tarefas
+      summary: Criar nova tarefa
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Tarefa criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  /tasks/{id}:
+    put:
+      tags:
+        - Tarefas
+      summary: Atualizar tarefa
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: Tarefa atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  # COMPETÊNCIAS
+  /competencies:
+    get:
+      tags:
+        - Competências
+      summary: Listar competências
+      responses:
+        '200':
+          description: Lista de competências
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Competency'
+
+    post:
+      tags:
+        - Competências
+      summary: Criar nova competência
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompetencyRequest'
+      responses:
+        '201':
+          description: Competência criada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competency'
+
+  /competencies/{id}:
+    put:
+      tags:
+        - Competências
+      summary: Atualizar competência
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCompetencyRequest'
+      responses:
+        '200':
+          description: Competência atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Competency'
+
+    delete:
+      tags:
+        - Competências
+      summary: Remover competência
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Competência removida
+
+  # DASHBOARD
+  /dashboard/metrics:
+    get:
+      tags:
+        - Dashboard
+      summary: Obter métricas do dashboard
+      responses:
+        '200':
+          description: Métricas gerais
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardMetrics'
+
+  # RELATÓRIOS
+  /reports/performance:
+    get:
+      tags:
+        - Relatórios
+      summary: Gerar relatório de performance
+      parameters:
+        - name: startDate
+          in: query
+          description: Data de início
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          description: Data de fim
+          schema:
+            type: string
+            format: date
+        - name: department
+          in: query
+          description: Departamento
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dados do relatório
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerformanceReport'
+
+components:
+  schemas:
+    Employee:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        position:
+          type: string
+        department:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        location:
+          type: string
+        avatar:
+          type: string
+        performance:
+          type: number
+          minimum: 0
+          maximum: 100
+        tasksCompleted:
+          type: integer
+        activeTasks:
+          type: integer
+        okrsAssigned:
+          type: integer
+        joinDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateEmployeeRequest:
+      type: object
+      required:
+        - name
+        - position
+        - department
+        - email
+      properties:
+        name:
+          type: string
+          minLength: 2
+        position:
+          type: string
+        department:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        location:
+          type: string
+        startDate:
+          type: string
+          format: date
+
+    UpdateEmployeeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        position:
+          type: string
+        department:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        location:
+          type: string
+
+    Evaluation:
+      type: object
+      properties:
+        id:
+          type: string
+        employeeId:
+          type: string
+        evaluatorId:
+          type: string
+        period:
+          type: string
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        overallScore:
+          type: number
+          minimum: 0
+          maximum: 100
+        competencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompetencyScore'
+        comments:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+
+    CreateEvaluationRequest:
+      type: object
+      required:
+        - employeeId
+        - period
+        - competencies
+      properties:
+        employeeId:
+          type: string
+        evaluatorId:
+          type: string
+        period:
+          type: string
+        competencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompetencyScore'
+        comments:
+          type: string
+
+    UpdateEvaluationRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        competencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompetencyScore'
+        comments:
+          type: string
+
+    CompetencyScore:
+      type: object
+      properties:
+        competencyId:
+          type: string
+        score:
+          type: number
+          minimum: 1
+          maximum: 5
+
+    OKR:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        department:
+          type: string
+        quarter:
+          type: string
+        year:
+          type: integer
+        progress:
+          type: number
+          minimum: 0
+          maximum: 100
+        keyResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/KeyResult'
+        ownerId:
+          type: string
+        status:
+          type: string
+          enum: [draft, active, completed, cancelled]
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateOKRRequest:
+      type: object
+      required:
+        - title
+        - department
+        - quarter
+        - year
+        - keyResults
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        department:
+          type: string
+        quarter:
+          type: string
+        year:
+          type: integer
+        keyResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateKeyResultRequest'
+        ownerId:
+          type: string
+
+    KeyResult:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        target:
+          type: number
+        current:
+          type: number
+        unit:
+          type: string
+        progress:
+          type: number
+
+    CreateKeyResultRequest:
+      type: object
+      required:
+        - title
+        - target
+      properties:
+        title:
+          type: string
+        target:
+          type: number
+        unit:
+          type: string
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+        priority:
+          type: string
+          enum: [low, medium, high]
+        assigneeId:
+          type: string
+        assigneeName:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateTaskRequest:
+      type: object
+      required:
+        - title
+        - assigneeId
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        priority:
+          type: string
+          enum: [low, medium, high]
+        assigneeId:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        tags:
+          type: array
+          items:
+            type: string
+
+    UpdateTaskRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+        priority:
+          type: string
+          enum: [low, medium, high]
+        assigneeId:
+          type: string
+        dueDate:
+          type: string
+          format: date
+        tags:
+          type: array
+          items:
+            type: string
+
+    Competency:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateCompetencyRequest:
+      type: object
+      required:
+        - name
+        - category
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+
+    UpdateCompetencyRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string
+
+    DashboardMetrics:
+      type: object
+      properties:
+        totalEmployees:
+          type: integer
+        averagePerformance:
+          type: number
+        activeTasks:
+          type: integer
+        completedTasks:
+          type: integer
+        totalOKRs:
+          type: integer
+        averageOKRProgress:
+          type: number
+        pendingEvaluations:
+          type: integer
+        departmentBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              department:
+                type: string
+              count:
+                type: integer
+              averagePerformance:
+                type: number
+
+    PerformanceReport:
+      type: object
+      properties:
+        period:
+          type: object
+          properties:
+            startDate:
+              type: string
+              format: date
+            endDate:
+              type: string
+              format: date
+        overview:
+          type: object
+          properties:
+            totalEmployees:
+              type: integer
+            evaluationsCompleted:
+              type: integer
+            averageScore:
+              type: number
+        departmentPerformance:
+          type: array
+          items:
+            type: object
+            properties:
+              department:
+                type: string
+              averageScore:
+                type: number
+              employeeCount:
+                type: integer
+        topPerformers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+        competencyAnalysis:
+          type: array
+          items:
+            type: object
+            properties:
+              competencyName:
+                type: string
+              averageScore:
+                type: number
+              totalEvaluations:
+                type: integer
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
