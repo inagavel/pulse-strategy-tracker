@@ -57,15 +57,15 @@ const Dashboard = () => {
   const chartConfig = {
     progress: {
       label: "Progresso Geral (%)",
-      color: "hsl(var(--chart-1))",
+      color: "#8B5CF6", // Roxo vibrante
     },
     okrs: {
       label: "OKRs Completados",
-      color: "hsl(var(--chart-2))",
+      color: "#F59E0B", // Amarelo/laranja vibrante
     },
     tasks: {
       label: "Tarefas Completadas (%)",
-      color: "hsl(var(--chart-3))",
+      color: "#10B981", // Verde vibrante
     },
     completed: {
       label: "Concluídas",
@@ -151,25 +151,25 @@ const Dashboard = () => {
             type="monotone" 
             dataKey="progress" 
             stackId="1"
-            stroke="hsl(var(--chart-1))" 
-            fill="hsl(var(--chart-1))"
-            fillOpacity={0.6}
+            stroke="#8B5CF6" 
+            fill="#8B5CF6"
+            fillOpacity={0.7}
           />
           <Area 
             type="monotone" 
             dataKey="okrs" 
             stackId="2"
-            stroke="hsl(var(--chart-2))" 
-            fill="hsl(var(--chart-2))"
-            fillOpacity={0.4}
+            stroke="#F59E0B" 
+            fill="#F59E0B"
+            fillOpacity={0.5}
           />
           <Area 
             type="monotone" 
             dataKey="tasks" 
             stackId="3"
-            stroke="hsl(var(--chart-3))" 
-            fill="hsl(var(--chart-3))"
-            fillOpacity={0.4}
+            stroke="#10B981" 
+            fill="#10B981"
+            fillOpacity={0.5}
           />
         </>
       );
@@ -178,9 +178,9 @@ const Dashboard = () => {
         <Area 
           type="monotone" 
           dataKey={selectedMetric} 
-          stroke={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))"} 
-          fill={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))"}
-          fillOpacity={0.6}
+          stroke={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "#8B5CF6"} 
+          fill={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "#8B5CF6"}
+          fillOpacity={0.7}
         />
       );
     }
@@ -303,16 +303,16 @@ const Dashboard = () => {
             <AreaChart data={getFilteredProgressData()} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
               <defs>
                 <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1}/>
                 </linearGradient>
                 <linearGradient id="colorOkrs" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.1}/>
                 </linearGradient>
                 <linearGradient id="colorTasks" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#10B981" stopOpacity={0.1}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
