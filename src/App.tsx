@@ -8,7 +8,7 @@ import Layout from "./components/Layout/Layout";
 import Dashboard from "./pages/Dashboard";
 import OKRs from "./pages/OKRs";
 import SWOT from "./pages/SWOT";
-import Planning from "./pages/Planning";
+import Performance from "./pages/Performance";
 import Tasks from "./pages/Tasks";
 import Employees from "./pages/Employees";
 import Reports from "./pages/Reports";
@@ -28,7 +28,7 @@ const App = () => (
             <Route path="/" element={<Dashboard />} />
             <Route path="/okrs" element={<OKRs />} />
             <Route path="/swot" element={<SWOT />} />
-            <Route path="/planning" element={<Planning />} />
+            <Route path="/performance" element={<Performance />} />
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/reports" element={<Reports />} />

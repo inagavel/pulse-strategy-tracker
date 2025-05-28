@@ -11,14 +11,15 @@ import {
   Settings,
   Home,
   PieChart,
-  Calendar
+  Calendar,
+  UserCheck
 } from 'lucide-react';
 
 const menuItems = [
   { name: 'Dashboard', path: '/', icon: Home },
   { name: 'OKRs', path: '/okrs', icon: Target },
   { name: 'Análise SWOT', path: '/swot', icon: TrendingUp },
-  { name: 'Planejamento 5W2H', path: '/planning', icon: FileText },
+  { name: 'Avaliação de Desempenho', path: '/performance', icon: UserCheck },
   { name: 'Gestão de Tarefas', path: '/tasks', icon: CheckSquare },
   { name: 'Colaboradores', path: '/employees', icon: Users },
   { name: 'Relatórios', path: '/reports', icon: BarChart3 },

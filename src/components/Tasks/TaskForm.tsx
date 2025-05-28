@@ -20,17 +20,24 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
     startDate: '',
     endDate: '',
     priority: 'medium' as 'low' | 'medium' | 'high',
-    okrId: '',
+    keyResultId: '',
+    keyResultTitle: '',
     okrTitle: '',
     department: ''
   });
 
-  const mockOKRs = [
-    { id: '1', title: 'Aumentar receita em 25%', area: 'Vendas' },
-    { id: '2', title: 'Melhorar satisfação do cliente', area: 'Atendimento' },
-    { id: '3', title: 'Otimizar processos internos', area: 'Operações' },
-    { id: '4', title: 'Expansão digital', area: 'Marketing' },
-    { id: '5', title: 'Modernização tecnológica', area: 'TI' }
+  // Mock Key Results with their associated OKRs
+  const mockKeyResults = [
+    { id: '1', title: 'Adquirir 100 novos clientes', area: 'Vendas', okrTitle: 'Aumentar receita em 25%' },
+    { id: '2', title: 'Aumentar ticket médio para €500', area: 'Vendas', okrTitle: 'Aumentar receita em 25%' },
+    { id: '3', title: 'Melhorar taxa de conversão para 15%', area: 'Vendas', okrTitle: 'Aumentar receita em 25%' },
+    { id: '4', title: 'Atingir NPS de 70', area: 'Atendimento', okrTitle: 'Melhorar satisfação do cliente' },
+    { id: '5', title: 'Reduzir tempo de resposta para 2h', area: 'Atendimento', okrTitle: 'Melhorar satisfação do cliente' },
+    { id: '6', title: 'Implementar chat 24/7', area: 'Atendimento', okrTitle: 'Melhorar satisfação do cliente' },
+    { id: '7', title: 'Implementar 5 automações', area: 'TI', okrTitle: 'Otimizar processos internos' },
+    { id: '8', title: 'Reduzir tempo de processo em 30%', area: 'TI', okrTitle: 'Otimizar processos internos' },
+    { id: '9', title: 'Contratar 8 desenvolvedores', area: 'RH', okrTitle: 'Expandir equipe de desenvolvimento' },
+    { id: '10', title: 'Concluir programa de onboarding', area: 'RH', okrTitle: 'Expandir equipe de desenvolvimento' }
   ];
 
   const collaborators = [
@@ -49,9 +56,9 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
     ? collaborators.filter(c => c.department === formData.department)
     : collaborators;
 
-  const filteredOKRs = formData.department && formData.department !== 'all-departments'
-    ? mockOKRs.filter(okr => okr.area === formData.department)
-    : mockOKRs;
+  const filteredKeyResults = formData.department && formData.department !== 'all-departments'
+    ? mockKeyResults.filter(kr => kr.area === formData.department)
+    : mockKeyResults;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,28 +85,31 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
       startDate: '',
       endDate: '',
       priority: 'medium',
-      okrId: '',
+      keyResultId: '',
+      keyResultTitle: '',
       okrTitle: '',
       department: ''
     });
     onClose();
   };
 
-  const handleOKRChange = (okrId: string) => {
-    if (okrId === 'no-okr') {
+  const handleKeyResultChange = (keyResultId: string) => {
+    if (keyResultId === 'no-key-result') {
       setFormData({
         ...formData,
-        okrId: '',
+        keyResultId: '',
+        keyResultTitle: '',
         okrTitle: ''
       });
       return;
     }
     
-    const okr = mockOKRs.find(okr => okr.id === okrId);
+    const keyResult = mockKeyResults.find(kr => kr.id === keyResultId);
     setFormData({
       ...formData,
-      okrId,
-      okrTitle: okr?.title || ''
+      keyResultId,
+      keyResultTitle: keyResult?.title || '',
+      okrTitle: keyResult?.okrTitle || ''
     });
   };
 
@@ -229,21 +239,21 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
                 <SelectContent>
                   <SelectItem value="low">
                     <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 rounded text-xs ${getPriorityColor('low')}`}>
+                      <span className="px-2 py-1 rounded text-xs bg-green-100 text-green-800">
                         Baixa
                       </span>
                     </div>
                   </SelectItem>
                   <SelectItem value="medium">
                     <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 rounded text-xs ${getPriorityColor('medium')}`}>
+                      <span className="px-2 py-1 rounded text-xs bg-yellow-100 text-yellow-800">
                         Média
                       </span>
                     </div>
                   </SelectItem>
                   <SelectItem value="high">
                     <div className="flex items-center space-x-2">
-                      <span className={`px-2 py-1 rounded text-xs ${getPriorityColor('high')}`}>
+                      <span className="px-2 py-1 rounded text-xs bg-red-100 text-red-800">
                         Alta
                       </span>
                     </div>
@@ -255,19 +265,19 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <Target size={16} className="inline mr-1" />
-                OKR Associado
+                Key Result Associado
               </label>
-              <Select value={formData.okrId || 'no-okr'} onValueChange={handleOKRChange}>
+              <Select value={formData.keyResultId || 'no-key-result'} onValueChange={handleKeyResultChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecionar OKR..." />
+                  <SelectValue placeholder="Selecionar Key Result..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="no-okr">Nenhum OKR</SelectItem>
-                  {filteredOKRs.map(okr => (
-                    <SelectItem key={okr.id} value={okr.id}>
+                  <SelectItem value="no-key-result">Nenhum Key Result</SelectItem>
+                  {filteredKeyResults.map(kr => (
+                    <SelectItem key={kr.id} value={kr.id}>
                       <div className="flex flex-col">
-                        <span className="font-medium">{okr.title}</span>
-                        <span className="text-xs text-gray-500">{okr.area}</span>
+                        <span className="font-medium">{kr.title}</span>
+                        <span className="text-xs text-gray-500">{kr.okrTitle} - {kr.area}</span>
                       </div>
                     </SelectItem>
                   ))}
@@ -307,7 +317,7 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
           </div>
 
           {/* Preview da tarefa */}
-          {(formData.title || formData.assignee || formData.okrTitle) && (
+          {(formData.title || formData.assignee || formData.keyResultTitle) && (
             <div className="bg-gray-50 rounded-lg p-4 border">
               <h4 className="text-sm font-medium text-gray-700 mb-2">Preview da Tarefa</h4>
               <div className="space-y-2 text-sm">
@@ -320,13 +330,20 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
                 {formData.department && (
                   <div><strong>Departamento:</strong> {formData.department}</div>
                 )}
+                {formData.keyResultTitle && (
+                  <div><strong>Key Result:</strong> {formData.keyResultTitle}</div>
+                )}
                 {formData.okrTitle && (
                   <div><strong>OKR:</strong> {formData.okrTitle}</div>
                 )}
                 <div>
                   <strong>Prioridade:</strong> 
-                  <span className={`ml-2 px-2 py-1 rounded text-xs ${getPriorityColor(formData.priority)}`}>
-                    {getPriorityLabel(formData.priority)}
+                  <span className={`ml-2 px-2 py-1 rounded text-xs ${
+                    formData.priority === 'high' ? 'bg-red-100 text-red-800' :
+                    formData.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-green-100 text-green-800'
+                  }`}>
+                    {formData.priority === 'high' ? 'Alta' : formData.priority === 'medium' ? 'Média' : 'Baixa'}
                   </span>
                 </div>
               </div>
