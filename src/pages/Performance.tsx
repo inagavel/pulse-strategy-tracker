@@ -140,22 +140,13 @@ const Performance = () => {
           <h1 className="text-2xl font-bold text-gray-900">Avaliação de Desempenho</h1>
           <p className="text-gray-600 mt-1">Gerencie e acompanhe as avaliações de desempenho dos colaboradores</p>
         </div>
-        <div className="flex space-x-3">
-          <button 
-            onClick={() => setShowEmployeeForm(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
-          >
-            <UserPlus size={20} />
-            <span>Novo Colaborador</span>
-          </button>
-          <button 
-            onClick={() => setShowEvaluationForm(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-          >
-            <Plus size={20} />
-            <span>Nova Avaliação</span>
-          </button>
-        </div>
+        <button 
+          onClick={() => setShowEvaluationForm(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+        >
+          <Plus size={20} />
+          <span>Nova Avaliação</span>
+        </button>
       </div>
 
       {/* Filtros */}
@@ -353,12 +344,6 @@ const Performance = () => {
         isOpen={showEvaluationForm}
         onClose={() => setShowEvaluationForm(false)}
         onSubmit={handleNewEvaluation}
-      />
-
-      <EmployeeForm
-        isOpen={showEmployeeForm}
-        onClose={() => setShowEmployeeForm(false)}
-        onSubmit={handleNewEmployee}
       />
     </div>
   );

@@ -33,12 +33,17 @@ const EvaluationForm = ({ isOpen, onClose, onSubmit }: EvaluationFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Calculate overall score based on competencies
+    const competencyValues = Object.values(formData.competencies);
+    const overallScore = competencyValues.reduce((sum, score) => sum + score, 0) / competencyValues.length;
+    
     const newEvaluation = {
       id: Date.now().toString(),
       ...formData,
-      status: 'in-progress',
-      overallScore: 0,
-      evaluationDate: ''
+      status: 'completed',
+      overallScore: parseFloat(overallScore.toFixed(1)),
+      evaluationDate: new Date().toISOString().split('T')[0]
     };
     onSubmit(newEvaluation);
     onClose();
