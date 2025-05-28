@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
-import { BarChart3, PieChart, TrendingUp, Download, Calendar } from 'lucide-react';
+import { BarChart3, PieChart, TrendingUp, Download, Calendar, FileText } from 'lucide-react';
+import { exportReportToPDF } from '../utils/pdfExport';
 
 const Reports = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('month');
@@ -31,6 +31,10 @@ const Reports = () => {
     }
   };
 
+  const handleExportPDF = () => {
+    exportReportToPDF(reportData, selectedPeriod);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -49,6 +53,13 @@ const Reports = () => {
             <option value="quarter">Este Trimestre</option>
             <option value="year">Este Ano</option>
           </select>
+          <button 
+            onClick={handleExportPDF}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2"
+          >
+            <FileText size={20} />
+            <span>Exportar PDF</span>
+          </button>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
             <Download size={20} />
             <span>Exportar</span>

@@ -1,18 +1,38 @@
-
 import React, { useState } from 'react';
-import { Settings as SettingsIcon, Bell, User, Shield, Database, Palette } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, User, Shield, Database, Palette, Plus, Trash2 } from 'lucide-react';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('general');
+  const [competencies, setCompetencies] = useState([
+    'Liderança',
+    'Comunicação',
+    'Competência Técnica',
+    'Trabalho em Equipe',
+    'Inovação',
+    'Adaptabilidade'
+  ]);
+  const [newCompetency, setNewCompetency] = useState('');
 
   const tabs = [
     { id: 'general', name: 'Geral', icon: SettingsIcon },
     { id: 'notifications', name: 'Notificações', icon: Bell },
     { id: 'users', name: 'Usuários', icon: User },
+    { id: 'competencies', name: 'Competências', icon: Shield },
     { id: 'security', name: 'Segurança', icon: Shield },
     { id: 'integrations', name: 'Integrações', icon: Database },
     { id: 'appearance', name: 'Aparência', icon: Palette },
   ];
+
+  const addCompetency = () => {
+    if (newCompetency.trim() && !competencies.includes(newCompetency.trim())) {
+      setCompetencies([...competencies, newCompetency.trim()]);
+      setNewCompetency('');
+    }
+  };
+
+  const removeCompetency = (index: number) => {
+    setCompetencies(competencies.filter((_, i) => i !== index));
+  };
 
   return (
     <div className="space-y-6">
@@ -151,6 +171,55 @@ const Settings = () => {
                     <option>Gestor</option>
                     <option>Administrador</option>
                   </select>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'competencies' && (
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-gray-900">Configuração de Competências</h2>
+              
+              <div className="space-y-4">
+                <div className="flex space-x-3">
+                  <input
+                    type="text"
+                    value={newCompetency}
+                    onChange={(e) => setNewCompetency(e.target.value)}
+                    placeholder="Digite nova competência..."
+                    className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    onKeyPress={(e) => e.key === 'Enter' && addCompetency()}
+                  />
+                  <button
+                    onClick={addCompetency}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                  >
+                    <Plus size={16} />
+                    <span>Adicionar</span>
+                  </button>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="font-medium text-gray-700">Competências Configuradas:</h3>
+                  <div className="space-y-2">
+                    {competencies.map((competency, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <span className="text-gray-700">{competency}</span>
+                        <button
+                          onClick={() => removeCompetency(index)}
+                          className="text-red-600 hover:text-red-800 transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="p-4 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Dica:</strong> As competências configuradas aqui serão utilizadas nas avaliações de desempenho dos colaboradores.
+                  </p>
                 </div>
               </div>
             </div>

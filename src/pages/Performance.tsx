@@ -1,6 +1,7 @@
-
 import React, { useState } from 'react';
-import { Plus, UserCheck, Users, Calendar, Star, Target, TrendingUp, Award } from 'lucide-react';
+import { Plus, UserCheck, Users, Calendar, Star, Target, TrendingUp, Award, UserPlus } from 'lucide-react';
+import EvaluationForm from '../components/Performance/EvaluationForm';
+import EmployeeForm from '../components/Performance/EmployeeForm';
 
 interface PerformanceEvaluation {
   id: string;
@@ -24,7 +25,7 @@ interface PerformanceEvaluation {
 }
 
 const Performance = () => {
-  const [evaluations] = useState<PerformanceEvaluation[]>([
+  const [evaluations, setEvaluations] = useState<PerformanceEvaluation[]>([
     {
       id: '1',
       employeeName: 'João Silva',
@@ -81,6 +82,8 @@ const Performance = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<string>('all');
   const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [showEvaluationForm, setShowEvaluationForm] = useState(false);
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
 
   const departments = ['Vendas', 'Marketing', 'TI', 'RH', 'Financeiro', 'Atendimento', 'Operações'];
 
@@ -121,6 +124,15 @@ const Performance = () => {
     setSelectedStatus('all');
   };
 
+  const handleNewEvaluation = (evaluation: any) => {
+    setEvaluations([...evaluations, evaluation]);
+  };
+
+  const handleNewEmployee = (employee: any) => {
+    console.log('Novo colaborador criado:', employee);
+    // Aqui você integraria com o sistema de colaboradores
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -128,10 +140,22 @@ const Performance = () => {
           <h1 className="text-2xl font-bold text-gray-900">Avaliação de Desempenho</h1>
           <p className="text-gray-600 mt-1">Gerencie e acompanhe as avaliações de desempenho dos colaboradores</p>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-          <Plus size={20} />
-          <span>Nova Avaliação</span>
-        </button>
+        <div className="flex space-x-3">
+          <button 
+            onClick={() => setShowEmployeeForm(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+          >
+            <UserPlus size={20} />
+            <span>Novo Colaborador</span>
+          </button>
+          <button 
+            onClick={() => setShowEvaluationForm(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          >
+            <Plus size={20} />
+            <span>Nova Avaliação</span>
+          </button>
+        </div>
       </div>
 
       {/* Filtros */}
@@ -324,6 +348,18 @@ const Performance = () => {
           <p className="text-gray-600">Ajuste os filtros ou crie uma nova avaliação.</p>
         </div>
       )}
+
+      <EvaluationForm
+        isOpen={showEvaluationForm}
+        onClose={() => setShowEvaluationForm(false)}
+        onSubmit={handleNewEvaluation}
+      />
+
+      <EmployeeForm
+        isOpen={showEmployeeForm}
+        onClose={() => setShowEmployeeForm(false)}
+        onSubmit={handleNewEmployee}
+      />
     </div>
   );
 };
