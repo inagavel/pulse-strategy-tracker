@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings as SettingsIcon, Bell, User, Shield, Database, Palette, Plus, Trash2 } from 'lucide-react';
+import { Settings as SettingsIcon, Bell, User, Shield, Database, Palette, Plus, Trash2, Edit } from 'lucide-react';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('general');
@@ -12,6 +12,8 @@ const Settings = () => {
     'Adaptabilidade'
   ]);
   const [newCompetency, setNewCompetency] = useState('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingValue, setEditingValue] = useState('');
 
   const tabs = [
     { id: 'general', name: 'Geral', icon: SettingsIcon },
@@ -32,6 +34,26 @@ const Settings = () => {
 
   const removeCompetency = (index: number) => {
     setCompetencies(competencies.filter((_, i) => i !== index));
+  };
+
+  const startEditing = (index: number) => {
+    setEditingIndex(index);
+    setEditingValue(competencies[index]);
+  };
+
+  const saveEdit = () => {
+    if (editingIndex !== null && editingValue.trim() && !competencies.includes(editingValue.trim())) {
+      const newCompetencies = [...competencies];
+      newCompetencies[editingIndex] = editingValue.trim();
+      setCompetencies(newCompetencies);
+      setEditingIndex(null);
+      setEditingValue('');
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingIndex(null);
+    setEditingValue('');
   };
 
   return (
@@ -204,13 +226,47 @@ const Settings = () => {
                   <div className="space-y-2">
                     {competencies.map((competency, index) => (
                       <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                        <span className="text-gray-700">{competency}</span>
-                        <button
-                          onClick={() => removeCompetency(index)}
-                          className="text-red-600 hover:text-red-800 transition-colors"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {editingIndex === index ? (
+                          <div className="flex-1 flex items-center space-x-2">
+                            <input
+                              type="text"
+                              value={editingValue}
+                              onChange={(e) => setEditingValue(e.target.value)}
+                              className="flex-1 border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
+                            />
+                            <button
+                              onClick={saveEdit}
+                              className="text-green-600 hover:text-green-800 transition-colors px-2 py-1 text-sm"
+                            >
+                              Salvar
+                            </button>
+                            <button
+                              onClick={cancelEdit}
+                              className="text-gray-600 hover:text-gray-800 transition-colors px-2 py-1 text-sm"
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <span className="text-gray-700">{competency}</span>
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => startEditing(index)}
+                                className="text-blue-600 hover:text-blue-800 transition-colors"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => removeCompetency(index)}
+                                className="text-red-600 hover:text-red-800 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </>
+                        )}
                       </div>
                     ))}
                   </div>

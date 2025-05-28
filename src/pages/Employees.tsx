@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Plus, Users, Mail, Phone, MapPin, Target, TrendingUp } from 'lucide-react';
+import EmployeeForm from '../components/Performance/EmployeeForm';
 
 interface Employee {
   id: string;
@@ -19,7 +20,7 @@ interface Employee {
 }
 
 const Employees = () => {
-  const [employees] = useState<Employee[]>([
+  const [employees, setEmployees] = useState<Employee[]>([
     {
       id: '1',
       name: 'João Silva',
@@ -83,6 +84,7 @@ const Employees = () => {
   ]);
 
   const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
+  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
 
   const filteredEmployees = selectedDepartment === 'all' 
     ? employees 
@@ -97,6 +99,32 @@ const Employees = () => {
     return 'text-red-600 bg-red-100';
   };
 
+  const handleNewEmployee = (newEmployeeData: any) => {
+    // Generate avatar initials from name
+    const nameParts = newEmployeeData.name.split(' ');
+    const avatar = nameParts.length >= 2 
+      ? nameParts[0][0] + nameParts[1][0] 
+      : nameParts[0][0] + (nameParts[0][1] || '');
+
+    const newEmployee: Employee = {
+      id: Date.now().toString(),
+      name: newEmployeeData.name,
+      position: newEmployeeData.position,
+      department: newEmployeeData.department,
+      email: newEmployeeData.email,
+      phone: newEmployeeData.phone || '',
+      location: newEmployeeData.location || '',
+      avatar: avatar.toUpperCase(),
+      performance: Math.floor(Math.random() * 20) + 80, // Random performance between 80-100
+      tasksCompleted: Math.floor(Math.random() * 20) + 5,
+      activeTasks: Math.floor(Math.random() * 8) + 2,
+      okrsAssigned: Math.floor(Math.random() * 3) + 1,
+      joinDate: newEmployeeData.startDate
+    };
+
+    setEmployees([...employees, newEmployee]);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -104,7 +132,10 @@ const Employees = () => {
           <h1 className="text-2xl font-bold text-gray-900">Colaboradores</h1>
           <p className="text-gray-600 mt-1">Gerencie a equipe e acompanhe o desempenho</p>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+        <button 
+          onClick={() => setShowEmployeeForm(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+        >
           <Plus size={20} />
           <span>Novo Colaborador</span>
         </button>
@@ -174,17 +205,14 @@ const Employees = () => {
         </div>
       </div>
 
-      {/* Lista de Colaboradores */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {filteredEmployees.map((employee) => (
           <div key={employee.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-start space-x-4">
-              {/* Avatar */}
               <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
                 {employee.avatar}
               </div>
               
-              {/* Informações principais */}
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
                   <div>
@@ -197,7 +225,6 @@ const Employees = () => {
                   </div>
                 </div>
 
-                {/* Informações de contato */}
                 <div className="space-y-1 mb-4">
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <Mail size={14} />
@@ -213,7 +240,6 @@ const Employees = () => {
                   </div>
                 </div>
 
-                {/* Estatísticas */}
                 <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
                   <div className="text-center">
                     <p className="text-lg font-semibold text-gray-900">{employee.tasksCompleted}</p>
@@ -233,6 +259,12 @@ const Employees = () => {
           </div>
         ))}
       </div>
+
+      <EmployeeForm
+        isOpen={showEmployeeForm}
+        onClose={() => setShowEmployeeForm(false)}
+        onSubmit={handleNewEmployee}
+      />
     </div>
   );
 };
