@@ -1,9 +1,10 @@
-
 import React, { useState } from 'react';
 import { Plus, Target, Edit, Trash2, Users, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { DepartmentCard } from '@/components/OKRs/DepartmentCard';
+import { OKRDetailView } from '@/components/OKRs/OKRDetailView';
 
 interface KeyResult {
   id: string;
@@ -25,8 +26,20 @@ interface OKR {
   area: string;
 }
 
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  assignee: string;
+  status: string;
+  priority: string;
+  dueDate: string;
+}
+
 const OKRs = () => {
   const { toast } = useToast();
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
+  
   const [okrs, setOkrs] = useState<OKR[]>([
     {
       id: '1',
@@ -57,12 +70,48 @@ const OKRs = () => {
         { id: '5', description: 'Reduzir tempo de resposta para 2h', progress: 75, target: 2, current: 3 },
         { id: '6', description: 'Implementar chat 24/7', progress: 90, target: 100, current: 90 },
       ]
+    },
+    {
+      id: '3',
+      title: 'Otimizar processos internos',
+      description: 'Automatizar tarefas repetitivas e melhorar eficiência',
+      owner: 'Carlos Lima',
+      quarter: 'Q1 2024',
+      progress: 45,
+      status: 'at-risk',
+      area: 'TI',
+      keyResults: [
+        { id: '7', description: 'Implementar 5 automações', progress: 40, target: 5, current: 2 },
+        { id: '8', description: 'Reduzir tempo de processo em 30%', progress: 50, target: 30, current: 15 },
+      ]
+    },
+    {
+      id: '4',
+      title: 'Expandir equipe de desenvolvimento',
+      description: 'Contratar e treinar novos desenvolvedores',
+      owner: 'Ana Costa',
+      quarter: 'Q1 2024',
+      progress: 90,
+      status: 'completed',
+      area: 'RH',
+      keyResults: [
+        { id: '9', description: 'Contratar 8 desenvolvedores', progress: 100, target: 8, current: 8 },
+        { id: '10', description: 'Concluir programa de onboarding', progress: 80, target: 100, current: 80 },
+      ]
     }
   ]);
 
+  // Mock tasks data
+  const mockTasks: Task[] = [
+    { id: '1', title: 'Configurar CRM', description: 'Setup do sistema CRM', assignee: 'João Silva', status: 'completed', priority: 'high', dueDate: '2024-02-15' },
+    { id: '2', title: 'Treinar equipe de vendas', description: 'Treinamento em técnicas de vendas', assignee: 'Maria Santos', status: 'in-progress', priority: 'medium', dueDate: '2024-02-20' },
+    { id: '3', title: 'Implementar chat', description: 'Setup do sistema de chat 24/7', assignee: 'Carlos Lima', status: 'pending', priority: 'high', dueDate: '2024-02-25' },
+    { id: '4', title: 'Análise de satisfação', description: 'Pesquisa de satisfação do cliente', assignee: 'Ana Costa', status: 'in-progress', priority: 'medium', dueDate: '2024-02-18' },
+    { id: '5', title: 'Automação de relatórios', description: 'Automatizar geração de relatórios', assignee: 'Pedro Oliveira', status: 'pending', priority: 'low', dueDate: '2024-03-01' },
+  ];
+
   const [isOKRFormOpen, setIsOKRFormOpen] = useState(false);
   const [editingOKR, setEditingOKR] = useState<OKR | null>(null);
-  const [selectedArea, setSelectedArea] = useState<string>('all');
 
   const areas = ['Vendas', 'Marketing', 'TI', 'RH', 'Financeiro', 'Atendimento', 'Operações'];
   const owners = ['João Silva', 'Maria Santos', 'Pedro Oliveira', 'Ana Costa', 'Carlos Lima'];
@@ -76,9 +125,14 @@ const OKRs = () => {
     keyResults: [{ description: '', target: 0 }]
   });
 
-  const filteredOkrs = okrs.filter(okr => 
-    selectedArea === 'all' || okr.area === selectedArea
-  );
+  // Group OKRs by department
+  const okrsByDepartment = areas.reduce((acc, area) => {
+    const departmentOKRs = okrs.filter(okr => okr.area === area);
+    if (departmentOKRs.length > 0) {
+      acc[area] = departmentOKRs;
+    }
+    return acc;
+  }, {} as Record<string, OKR[]>);
 
   const handleAddOKR = () => {
     if (!formData.title || !formData.owner || !formData.area) {
@@ -156,161 +210,51 @@ const OKRs = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed': return 'bg-green-100 text-green-800';
-      case 'at-risk': return 'bg-red-100 text-red-800';
-      default: return 'bg-blue-100 text-blue-800';
-    }
-  };
-
-  const getProgressColor = (progress: number) => {
-    if (progress >= 80) return 'bg-green-600';
-    if (progress >= 60) return 'bg-blue-600';
-    if (progress >= 40) return 'bg-yellow-600';
-    return 'bg-red-600';
-  };
+  if (selectedDepartment) {
+    return (
+      <OKRDetailView
+        department={selectedDepartment}
+        okrs={okrsByDepartment[selectedDepartment] || []}
+        tasks={mockTasks}
+        onBack={() => setSelectedDepartment(null)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">OKRs</h1>
-          <p className="text-gray-600 mt-1">Objectives and Key Results</p>
+          <h1 className="text-2xl font-bold text-gray-900">OKRs por Departamento</h1>
+          <p className="text-gray-600 mt-1">Visão geral dos objetivos organizados por área</p>
         </div>
-        <button 
+        <Button 
           onClick={() => setIsOKRFormOpen(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          className="bg-blue-600 text-white hover:bg-blue-700 flex items-center space-x-2"
         >
           <Plus size={20} />
           <span>Novo OKR</span>
-        </button>
+        </Button>
       </div>
 
-      {/* Filtros */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div className="flex items-center space-x-4 mb-4">
-          <Building2 className="text-gray-400" size={20} />
-          <span className="font-medium text-gray-700">Filtrar por Área:</span>
-        </div>
-        
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setSelectedArea('all')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              selectedArea === 'all' 
-                ? 'bg-blue-600 text-white' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            Todas as Áreas
-          </button>
-          {areas.map(area => (
-            <button
-              key={area}
-              onClick={() => setSelectedArea(area)}
-              className={`px-4 py-2 rounded-lg transition-colors ${
-                selectedArea === area 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              {area}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        {filteredOkrs.map((okr) => (
-          <div key={okr.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <Target className="text-blue-600" size={24} />
-                  <h3 className="text-lg font-semibold text-gray-900">{okr.title}</h3>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(okr.status)}`}>
-                    {okr.status}
-                  </span>
-                </div>
-                <p className="text-gray-600 mb-2">{okr.description}</p>
-                <div className="flex items-center space-x-4 text-sm text-gray-500">
-                  <span className="flex items-center space-x-1">
-                    <Users size={16} />
-                    <span>{okr.owner}</span>
-                  </span>
-                  <span className="flex items-center space-x-1">
-                    <Building2 size={16} />
-                    <span>{okr.area}</span>
-                  </span>
-                  <span>{okr.quarter}</span>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <button 
-                  onClick={() => {
-                    setEditingOKR(okr);
-                    setFormData({
-                      title: okr.title,
-                      description: okr.description,
-                      owner: okr.owner,
-                      quarter: okr.quarter,
-                      area: okr.area,
-                      keyResults: okr.keyResults.map(kr => ({ description: kr.description, target: kr.target }))
-                    });
-                    setIsOKRFormOpen(true);
-                  }}
-                  className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <Edit size={16} />
-                </button>
-                <button 
-                  onClick={() => handleDeleteOKR(okr.id)}
-                  className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            </div>
-
-            {/* Progresso geral */}
-            <div className="mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">Progresso Geral</span>
-                <span className="text-sm text-gray-500">{okr.progress}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(okr.progress)}`}
-                  style={{ width: `${okr.progress}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Key Results */}
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-3">Key Results</h4>
-              <div className="space-y-3">
-                {okr.keyResults.map((kr) => (
-                  <div key={kr.id} className="border border-gray-100 rounded-lg p-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-medium text-gray-700">{kr.description}</span>
-                      <span className="text-sm text-gray-500">{kr.current}/{kr.target}</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div
-                        className={`h-1.5 rounded-full transition-all duration-300 ${getProgressColor(kr.progress)}`}
-                        style={{ width: `${kr.progress}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* Cards por Departamento */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Object.entries(okrsByDepartment).map(([department, departmentOKRs]) => (
+          <DepartmentCard
+            key={department}
+            department={department}
+            okrs={departmentOKRs}
+            onClick={setSelectedDepartment}
+          />
         ))}
       </div>
+
+      {Object.keys(okrsByDepartment).length === 0 && (
+        <div className="text-center py-12">
+          <div className="text-gray-500 text-lg">Nenhum OKR encontrado</div>
+          <p className="text-gray-400 mt-2">Comece criando seu primeiro objetivo</p>
+        </div>
+      )}
 
       {/* Modal para novo/editar OKR */}
       <Dialog open={isOKRFormOpen} onOpenChange={() => {
