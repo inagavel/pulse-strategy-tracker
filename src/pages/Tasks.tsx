@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Plus, CheckSquare, Clock, User, Target, Calendar, Filter, LayoutGrid, List } from 'lucide-react';
 import KanbanBoard from '../components/Tasks/KanbanBoard';
+import TaskForm from '../components/Tasks/TaskForm';
+import { useToast } from '@/hooks/use-toast';
 
 interface Task {
   id: string;
@@ -17,7 +19,8 @@ interface Task {
 }
 
 const Tasks = () => {
-  const [tasks] = useState<Task[]>([
+  const { toast } = useToast();
+  const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
       title: 'Desenvolver nova funcionalidade de relatórios',
@@ -71,12 +74,37 @@ const Tasks = () => {
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'pending' | 'in-progress' | 'completed' | 'overdue'>('all');
   const [selectedAssignee, setSelectedAssignee] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
+  const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
 
   const filteredTasks = tasks.filter(task => {
     const statusMatch = selectedStatus === 'all' || task.status === selectedStatus;
     const assigneeMatch = selectedAssignee === 'all' || task.assignee === selectedAssignee;
     return statusMatch && assigneeMatch;
   });
+
+  const handleTaskMove = (taskId: string, newStatus: string) => {
+    setTasks(prevTasks => 
+      prevTasks.map(task => 
+        task.id === taskId 
+          ? { ...task, status: newStatus as Task['status'] }
+          : task
+      )
+    );
+
+    toast({
+      title: "Tarefa movida",
+      description: "Status da tarefa atualizado com sucesso!",
+    });
+  };
+
+  const handleAddTask = (newTask: Task) => {
+    setTasks(prevTasks => [...prevTasks, newTask]);
+    
+    toast({
+      title: "Tarefa criada",
+      description: "Nova tarefa adicionada com sucesso!",
+    });
+  };
 
   const getStatusColor = (status: string) => {
     const colors = {
@@ -136,7 +164,10 @@ const Tasks = () => {
             </button>
           </div>
           
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+          <button 
+            onClick={() => setIsTaskFormOpen(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          >
             <Plus size={20} />
             <span>Nova Tarefa</span>
           </button>
@@ -184,7 +215,7 @@ const Tasks = () => {
 
       {/* Conteúdo baseado no modo de visualização */}
       {viewMode === 'kanban' ? (
-        <KanbanBoard tasks={filteredTasks} />
+        <KanbanBoard tasks={filteredTasks} onTaskMove={handleTaskMove} />
       ) : (
         <div className="space-y-4">
           {filteredTasks.map((task) => (
@@ -254,6 +285,13 @@ const Tasks = () => {
           <p className="text-gray-600">Ajuste os filtros ou crie uma nova tarefa.</p>
         </div>
       )}
+
+      {/* Modal para nova tarefa */}
+      <TaskForm
+        isOpen={isTaskFormOpen}
+        onClose={() => setIsTaskFormOpen(false)}
+        onSubmit={handleAddTask}
+      />
     </div>
   );
 };

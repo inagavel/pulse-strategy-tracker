@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { User, Calendar, Target, Clock } from 'lucide-react';
 
 interface Task {
@@ -22,6 +22,9 @@ interface KanbanBoardProps {
 }
 
 const KanbanBoard = ({ tasks, onTaskMove }: KanbanBoardProps) => {
+  const [draggedTask, setDraggedTask] = useState<string | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+
   const columns = [
     { id: 'pending', title: 'Pendentes', color: 'bg-yellow-50 border-yellow-200' },
     { id: 'in-progress', title: 'Em Andamento', color: 'bg-blue-50 border-blue-200' },
@@ -49,10 +52,59 @@ const KanbanBoard = ({ tasks, onTaskMove }: KanbanBoardProps) => {
     return 'bg-red-600';
   };
 
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, taskId: string) => {
+    setDraggedTask(taskId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragEnd = () => {
+    setDraggedTask(null);
+    setDragOverColumn(null);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDragEnter = (columnId: string) => {
+    setDragOverColumn(columnId);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      setDragOverColumn(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, columnId: string) => {
+    e.preventDefault();
+    
+    if (draggedTask && onTaskMove) {
+      onTaskMove(draggedTask, columnId);
+    }
+    
+    setDraggedTask(null);
+    setDragOverColumn(null);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-full">
       {columns.map((column) => (
-        <div key={column.id} className={`${column.color} rounded-lg border-2 border-dashed p-4`}>
+        <div 
+          key={column.id} 
+          className={`${column.color} rounded-lg border-2 border-dashed p-4 transition-all duration-200 ${
+            dragOverColumn === column.id ? 'border-blue-400 bg-blue-50' : ''
+          }`}
+          onDragOver={handleDragOver}
+          onDragEnter={() => handleDragEnter(column.id)}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => handleDrop(e, column.id)}
+        >
           <div className="mb-4">
             <h3 className="font-semibold text-gray-900 mb-2">{column.title}</h3>
             <span className="text-sm text-gray-600">
@@ -64,7 +116,12 @@ const KanbanBoard = ({ tasks, onTaskMove }: KanbanBoardProps) => {
             {getTasksByStatus(column.id).map((task) => (
               <div
                 key={task.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
+                draggable
+                onDragStart={(e) => handleDragStart(e, task.id)}
+                onDragEnd={handleDragEnd}
+                className={`bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-all cursor-move ${
+                  draggedTask === task.id ? 'opacity-50 transform rotate-2' : ''
+                }`}
               >
                 <div className="mb-3">
                   <div className="flex items-center justify-between mb-2">
@@ -115,6 +172,13 @@ const KanbanBoard = ({ tasks, onTaskMove }: KanbanBoardProps) => {
                 </div>
               </div>
             ))}
+            
+            {/* Drop zone indicator */}
+            {dragOverColumn === column.id && (
+              <div className="border-2 border-dashed border-blue-400 rounded-lg p-8 text-center text-blue-600">
+                <p className="text-sm">Solte a tarefa aqui</p>
+              </div>
+            )}
           </div>
         </div>
       ))}
