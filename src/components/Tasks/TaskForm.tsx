@@ -45,11 +45,11 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
 
   const departments = ['Vendas', 'Marketing', 'TI', 'RH', 'Financeiro', 'Atendimento', 'Operações'];
 
-  const filteredCollaborators = formData.department 
+  const filteredCollaborators = formData.department && formData.department !== 'all-departments'
     ? collaborators.filter(c => c.department === formData.department)
     : collaborators;
 
-  const filteredOKRs = formData.department 
+  const filteredOKRs = formData.department && formData.department !== 'all-departments'
     ? mockOKRs.filter(okr => okr.area === formData.department)
     : mockOKRs;
 
@@ -67,7 +67,7 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
       ...formData,
       status: 'pending' as const,
       progress: 0,
-      department: selectedCollaborator?.department || formData.department
+      department: selectedCollaborator?.department || (formData.department !== 'all-departments' ? formData.department : '')
     };
 
     onSubmit(newTask);
@@ -86,6 +86,15 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
   };
 
   const handleOKRChange = (okrId: string) => {
+    if (okrId === 'no-okr') {
+      setFormData({
+        ...formData,
+        okrId: '',
+        okrTitle: ''
+      });
+      return;
+    }
+    
     const okr = mockOKRs.find(okr => okr.id === okrId);
     setFormData({
       ...formData,
@@ -100,6 +109,15 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
       ...formData,
       assignee: assigneeName,
       department: collaborator?.department || ''
+    });
+  };
+
+  const handleDepartmentChange = (department: string) => {
+    const finalDepartment = department === 'all-departments' ? '' : department;
+    setFormData({ 
+      ...formData, 
+      department: finalDepartment, 
+      assignee: '' 
     });
   };
 
@@ -162,12 +180,12 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
                 <Building2 size={16} className="inline mr-1" />
                 Departamento
               </label>
-              <Select value={formData.department} onValueChange={(value) => setFormData({ ...formData, department: value, assignee: '' })}>
+              <Select value={formData.department || 'all-departments'} onValueChange={handleDepartmentChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecionar departamento..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos os departamentos</SelectItem>
+                  <SelectItem value="all-departments">Todos os departamentos</SelectItem>
                   {departments.map(dept => (
                     <SelectItem key={dept} value={dept}>{dept}</SelectItem>
                   ))}
@@ -239,12 +257,12 @@ const TaskForm = ({ isOpen, onClose, onSubmit }: TaskFormProps) => {
                 <Target size={16} className="inline mr-1" />
                 OKR Associado
               </label>
-              <Select value={formData.okrId} onValueChange={handleOKRChange}>
+              <Select value={formData.okrId || 'no-okr'} onValueChange={handleOKRChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecionar OKR..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhum OKR</SelectItem>
+                  <SelectItem value="no-okr">Nenhum OKR</SelectItem>
                   {filteredOKRs.map(okr => (
                     <SelectItem key={okr.id} value={okr.id}>
                       <div className="flex flex-col">
