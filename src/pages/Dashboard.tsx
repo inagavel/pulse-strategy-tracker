@@ -1,13 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import MetricCard from '../components/Dashboard/MetricCard';
 import OKRProgress from '../components/Dashboard/OKRProgress';
 import TaskSummary from '../components/Dashboard/TaskSummary';
-import { Target, Users, TrendingUp, DollarSign, Activity, Clock } from 'lucide-react';
+import { Target, Users, TrendingUp, DollarSign, Activity, Clock, Filter, Calendar } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Dashboard = () => {
+  const [selectedPeriod, setSelectedPeriod] = useState('2024');
+  const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedMetric, setSelectedMetric] = useState('all');
+
   // Dados para o gráfico de evolução do progresso
   const progressData = [
     { month: 'Jan', progress: 65, okrs: 12, tasks: 85 },
@@ -25,7 +31,7 @@ const Dashboard = () => {
   ];
 
   // Dados para o gráfico por departamento
-  const departmentData = [
+  const allDepartmentData = [
     { department: 'Vendas', completed: 95, inProgress: 12, pending: 8 },
     { department: 'Marketing', completed: 88, inProgress: 15, pending: 5 },
     { department: 'TI', completed: 92, inProgress: 18, pending: 7 },
@@ -34,9 +40,24 @@ const Dashboard = () => {
     { department: 'Operações', completed: 87, inProgress: 20, pending: 10 }
   ];
 
+  // Filtrar dados por departamento
+  const filteredDepartmentData = selectedDepartment === 'all' 
+    ? allDepartmentData 
+    : allDepartmentData.filter(item => item.department.toLowerCase() === selectedDepartment);
+
+  // Filtrar dados de progresso por métrica
+  const getFilteredProgressData = () => {
+    if (selectedMetric === 'all') return progressData;
+    
+    return progressData.map(item => ({
+      month: item.month,
+      [selectedMetric]: item[selectedMetric as keyof typeof item]
+    }));
+  };
+
   const chartConfig = {
     progress: {
-      label: "Progresso Geral",
+      label: "Progresso Geral (%)",
       color: "hsl(var(--chart-1))",
     },
     okrs: {
@@ -44,7 +65,7 @@ const Dashboard = () => {
       color: "hsl(var(--chart-2))",
     },
     tasks: {
-      label: "Tarefas Completadas",
+      label: "Tarefas Completadas (%)",
       color: "hsl(var(--chart-3))",
     },
     completed: {
@@ -121,11 +142,117 @@ const Dashboard = () => {
     }
   };
 
+  const renderProgressLines = () => {
+    const filteredData = getFilteredProgressData();
+    
+    if (selectedMetric === 'all') {
+      return (
+        <>
+          <Line 
+            type="linear" 
+            dataKey="progress" 
+            stroke="hsl(var(--chart-1))" 
+            strokeWidth={3}
+            dot={{ fill: "hsl(var(--chart-1))", strokeWidth: 2, r: 4 }}
+          />
+          <Line 
+            type="linear" 
+            dataKey="okrs" 
+            stroke="hsl(var(--chart-2))" 
+            strokeWidth={2}
+            dot={{ fill: "hsl(var(--chart-2))", strokeWidth: 2, r: 3 }}
+          />
+          <Line 
+            type="linear" 
+            dataKey="tasks" 
+            stroke="hsl(var(--chart-3))" 
+            strokeWidth={2}
+            dot={{ fill: "hsl(var(--chart-3))", strokeWidth: 2, r: 3 }}
+          />
+        </>
+      );
+    } else {
+      return (
+        <Line 
+          type="linear" 
+          dataKey={selectedMetric} 
+          stroke={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))"} 
+          strokeWidth={3}
+          dot={{ fill: chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))", strokeWidth: 2, r: 4 }}
+        />
+      );
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-gray-600 mt-1">Visão geral do desempenho da empresa</p>
+      </div>
+
+      {/* Filtros e Controles */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-gray-500" />
+            <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="2024">2024</SelectItem>
+                <SelectItem value="2023">2023</SelectItem>
+                <SelectItem value="2022">2022</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Filter className="w-5 h-5 text-gray-500" />
+            <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Departamento" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos</SelectItem>
+                <SelectItem value="vendas">Vendas</SelectItem>
+                <SelectItem value="marketing">Marketing</SelectItem>
+                <SelectItem value="ti">TI</SelectItem>
+                <SelectItem value="rh">RH</SelectItem>
+                <SelectItem value="financeiro">Financeiro</SelectItem>
+                <SelectItem value="operações">Operações</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-gray-500" />
+            <Select value={selectedMetric} onValueChange={setSelectedMetric}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Métrica" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas</SelectItem>
+                <SelectItem value="progress">Progresso</SelectItem>
+                <SelectItem value="okrs">OKRs</SelectItem>
+                <SelectItem value="tasks">Tarefas</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              setSelectedPeriod('2024');
+              setSelectedDepartment('all');
+              setSelectedMetric('all');
+            }}
+          >
+            Limpar Filtros
+          </Button>
+        </div>
       </div>
 
       {/* Métricas principais */}
@@ -162,45 +289,35 @@ const Dashboard = () => {
 
       {/* Gráficos de evolução */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de Evolução do Progresso */}
+        {/* Gráfico de Evolução do Progresso - Linear */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Evolução do Progresso Anual</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Evolução do Progresso Anual</h3>
+            <div className="text-sm text-gray-500">
+              Período: {selectedPeriod} | Métrica: {selectedMetric === 'all' ? 'Todas' : chartConfig[selectedMetric as keyof typeof chartConfig]?.label}
+            </div>
+          </div>
           <ChartContainer config={chartConfig} className="h-[300px]">
-            <LineChart data={progressData}>
+            <LineChart data={getFilteredProgressData()}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
               <ChartTooltip content={<ChartTooltipContent />} />
-              <Line 
-                type="monotone" 
-                dataKey="progress" 
-                stroke="hsl(var(--chart-1))" 
-                strokeWidth={3}
-                dot={{ fill: "hsl(var(--chart-1))", strokeWidth: 2, r: 4 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="okrs" 
-                stroke="hsl(var(--chart-2))" 
-                strokeWidth={2}
-                dot={{ fill: "hsl(var(--chart-2))", strokeWidth: 2, r: 3 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="tasks" 
-                stroke="hsl(var(--chart-3))" 
-                strokeWidth={2}
-                dot={{ fill: "hsl(var(--chart-3))", strokeWidth: 2, r: 3 }}
-              />
+              {renderProgressLines()}
             </LineChart>
           </ChartContainer>
         </div>
 
         {/* Gráfico por Departamento */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Performance por Departamento</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Performance por Departamento</h3>
+            <div className="text-sm text-gray-500">
+              {selectedDepartment === 'all' ? 'Todos os departamentos' : selectedDepartment.charAt(0).toUpperCase() + selectedDepartment.slice(1)}
+            </div>
+          </div>
           <ChartContainer config={chartConfig} className="h-[300px]">
-            <BarChart data={departmentData}>
+            <BarChart data={filteredDepartmentData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="department" />
               <YAxis />
