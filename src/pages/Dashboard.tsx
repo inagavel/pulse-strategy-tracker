@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import MetricCard from '../components/Dashboard/MetricCard';
 import OKRProgress from '../components/Dashboard/OKRProgress';
 import TaskSummary from '../components/Dashboard/TaskSummary';
 import { Target, Users, TrendingUp, DollarSign, Activity, Clock, Filter, Calendar } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -142,43 +141,46 @@ const Dashboard = () => {
     }
   };
 
-  const renderProgressLines = () => {
+  const renderProgressAreas = () => {
     const filteredData = getFilteredProgressData();
     
     if (selectedMetric === 'all') {
       return (
         <>
-          <Line 
-            type="linear" 
+          <Area 
+            type="monotone" 
             dataKey="progress" 
+            stackId="1"
             stroke="hsl(var(--chart-1))" 
-            strokeWidth={3}
-            dot={{ fill: "hsl(var(--chart-1))", strokeWidth: 2, r: 4 }}
+            fill="hsl(var(--chart-1))"
+            fillOpacity={0.6}
           />
-          <Line 
-            type="linear" 
+          <Area 
+            type="monotone" 
             dataKey="okrs" 
+            stackId="2"
             stroke="hsl(var(--chart-2))" 
-            strokeWidth={2}
-            dot={{ fill: "hsl(var(--chart-2))", strokeWidth: 2, r: 3 }}
+            fill="hsl(var(--chart-2))"
+            fillOpacity={0.4}
           />
-          <Line 
-            type="linear" 
+          <Area 
+            type="monotone" 
             dataKey="tasks" 
+            stackId="3"
             stroke="hsl(var(--chart-3))" 
-            strokeWidth={2}
-            dot={{ fill: "hsl(var(--chart-3))", strokeWidth: 2, r: 3 }}
+            fill="hsl(var(--chart-3))"
+            fillOpacity={0.4}
           />
         </>
       );
     } else {
       return (
-        <Line 
-          type="linear" 
+        <Area 
+          type="monotone" 
           dataKey={selectedMetric} 
           stroke={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))"} 
-          strokeWidth={3}
-          dot={{ fill: chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))", strokeWidth: 2, r: 4 }}
+          fill={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))"}
+          fillOpacity={0.6}
         />
       );
     }
@@ -289,43 +291,110 @@ const Dashboard = () => {
 
       {/* Gráficos de evolução */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de Evolução do Progresso - Linear */}
+        {/* Gráfico de Evolução do Progresso - Área */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">Evolução do Progresso Anual</h3>
             <div className="text-sm text-gray-500">
               Período: {selectedPeriod} | Métrica: {selectedMetric === 'all' ? 'Todas' : chartConfig[selectedMetric as keyof typeof chartConfig]?.label}
             </div>
           </div>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <LineChart data={getFilteredProgressData()}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              {renderProgressLines()}
-            </LineChart>
+          <ChartContainer config={chartConfig} className="h-[400px] w-full">
+            <AreaChart data={getFilteredProgressData()} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <defs>
+                <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.1}/>
+                </linearGradient>
+                <linearGradient id="colorOkrs" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
+                </linearGradient>
+                <linearGradient id="colorTasks" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis 
+                dataKey="month" 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+              />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+              />
+              <ChartTooltip 
+                content={<ChartTooltipContent />}
+                contentStyle={{
+                  backgroundColor: "hsl(var(--background))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: "8px"
+                }}
+              />
+              {renderProgressAreas()}
+            </AreaChart>
           </ChartContainer>
         </div>
 
-        {/* Gráfico por Departamento */}
+        {/* Gráfico por Departamento - Melhorado */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">Performance por Departamento</h3>
             <div className="text-sm text-gray-500">
               {selectedDepartment === 'all' ? 'Todos os departamentos' : selectedDepartment.charAt(0).toUpperCase() + selectedDepartment.slice(1)}
             </div>
           </div>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <BarChart data={filteredDepartmentData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="department" />
-              <YAxis />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <Legend />
-              <Bar dataKey="completed" fill="hsl(142, 76%, 36%)" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="inProgress" fill="hsl(217, 91%, 60%)" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="pending" fill="hsl(45, 93%, 47%)" radius={[2, 2, 0, 0]} />
+          <ChartContainer config={chartConfig} className="h-[400px] w-full">
+            <BarChart data={filteredDepartmentData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <XAxis 
+                dataKey="department" 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                angle={-45}
+                textAnchor="end"
+                height={80}
+              />
+              <YAxis 
+                axisLine={false}
+                tickLine={false}
+                tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+              />
+              <ChartTooltip 
+                content={<ChartTooltipContent />}
+                contentStyle={{
+                  backgroundColor: "hsl(var(--background))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: "8px"
+                }}
+              />
+              <Legend 
+                wrapperStyle={{ paddingTop: '20px' }}
+                iconType="rect"
+              />
+              <Bar 
+                dataKey="completed" 
+                fill="hsl(142, 76%, 36%)" 
+                radius={[4, 4, 0, 0]}
+                name="Concluídas"
+              />
+              <Bar 
+                dataKey="inProgress" 
+                fill="hsl(217, 91%, 60%)" 
+                radius={[4, 4, 0, 0]}
+                name="Em Andamento"
+              />
+              <Bar 
+                dataKey="pending" 
+                fill="hsl(45, 93%, 47%)" 
+                radius={[4, 4, 0, 0]}
+                name="Pendentes"
+              />
             </BarChart>
           </ChartContainer>
         </div>
