@@ -11,21 +11,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 const Dashboard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('2024');
   const [selectedDepartment, setSelectedDepartment] = useState('all');
+  const [selectedMetric, setSelectedMetric] = useState('all');
 
-  // Dados para o gráfico de evolução do progresso - apenas progresso geral
+  // Dados para o gráfico de evolução do progresso
   const progressData = [
-    { month: 'Jan', progress: 65 },
-    { month: 'Fev', progress: 72 },
-    { month: 'Mar', progress: 78 },
-    { month: 'Abr', progress: 75 },
-    { month: 'Mai', progress: 85 },
-    { month: 'Jun', progress: 88 },
-    { month: 'Jul', progress: 92 },
-    { month: 'Ago', progress: 89 },
-    { month: 'Set', progress: 94 },
-    { month: 'Out', progress: 91 },
-    { month: 'Nov', progress: 96 },
-    { month: 'Dez', progress: 98 }
+    { month: 'Jan', progress: 65, okrs: 12, tasks: 85 },
+    { month: 'Fev', progress: 72, okrs: 15, tasks: 92 },
+    { month: 'Mar', progress: 78, okrs: 18, tasks: 88 },
+    { month: 'Abr', progress: 75, okrs: 16, tasks: 95 },
+    { month: 'Mai', progress: 85, okrs: 22, tasks: 98 },
+    { month: 'Jun', progress: 88, okrs: 25, tasks: 90 },
+    { month: 'Jul', progress: 92, okrs: 28, tasks: 94 },
+    { month: 'Ago', progress: 89, okrs: 26, tasks: 96 },
+    { month: 'Set', progress: 94, okrs: 30, tasks: 98 },
+    { month: 'Out', progress: 91, okrs: 28, tasks: 92 },
+    { month: 'Nov', progress: 96, okrs: 32, tasks: 99 },
+    { month: 'Dez', progress: 98, okrs: 35, tasks: 97 }
   ];
 
   // Dados para o gráfico por departamento
@@ -43,10 +44,28 @@ const Dashboard = () => {
     ? allDepartmentData 
     : allDepartmentData.filter(item => item.department.toLowerCase() === selectedDepartment);
 
+  // Filtrar dados de progresso por métrica
+  const getFilteredProgressData = () => {
+    if (selectedMetric === 'all') return progressData;
+    
+    return progressData.map(item => ({
+      month: item.month,
+      [selectedMetric]: item[selectedMetric as keyof typeof item]
+    }));
+  };
+
   const chartConfig = {
     progress: {
       label: "Progresso Geral (%)",
-      color: "#8B5CF6",
+      color: "hsl(var(--chart-1))",
+    },
+    okrs: {
+      label: "OKRs Completados",
+      color: "hsl(var(--chart-2))",
+    },
+    tasks: {
+      label: "Tarefas Completadas (%)",
+      color: "hsl(var(--chart-3))",
     },
     completed: {
       label: "Concluídas",
@@ -122,6 +141,51 @@ const Dashboard = () => {
     }
   };
 
+  const renderProgressAreas = () => {
+    const filteredData = getFilteredProgressData();
+    
+    if (selectedMetric === 'all') {
+      return (
+        <>
+          <Area 
+            type="monotone" 
+            dataKey="progress" 
+            stackId="1"
+            stroke="hsl(var(--chart-1))" 
+            fill="hsl(var(--chart-1))"
+            fillOpacity={0.6}
+          />
+          <Area 
+            type="monotone" 
+            dataKey="okrs" 
+            stackId="2"
+            stroke="hsl(var(--chart-2))" 
+            fill="hsl(var(--chart-2))"
+            fillOpacity={0.4}
+          />
+          <Area 
+            type="monotone" 
+            dataKey="tasks" 
+            stackId="3"
+            stroke="hsl(var(--chart-3))" 
+            fill="hsl(var(--chart-3))"
+            fillOpacity={0.4}
+          />
+        </>
+      );
+    } else {
+      return (
+        <Area 
+          type="monotone" 
+          dataKey={selectedMetric} 
+          stroke={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))"} 
+          fill={chartConfig[selectedMetric as keyof typeof chartConfig]?.color || "hsl(var(--chart-1))"}
+          fillOpacity={0.6}
+        />
+      );
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -164,12 +228,28 @@ const Dashboard = () => {
             </Select>
           </div>
 
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-gray-500" />
+            <Select value={selectedMetric} onValueChange={setSelectedMetric}>
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="Métrica" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas</SelectItem>
+                <SelectItem value="progress">Progresso</SelectItem>
+                <SelectItem value="okrs">OKRs</SelectItem>
+                <SelectItem value="tasks">Tarefas</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <Button 
             variant="outline" 
             size="sm"
             onClick={() => {
               setSelectedPeriod('2024');
               setSelectedDepartment('all');
+              setSelectedMetric('all');
             }}
           >
             Limpar Filtros
@@ -211,21 +291,28 @@ const Dashboard = () => {
 
       {/* Gráficos de evolução */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Gráfico de Evolução do Progresso - Área com apenas progresso geral */}
+        {/* Gráfico de Evolução do Progresso - Área */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">Evolução do Progresso Anual</h3>
             <div className="text-sm text-gray-500">
-              Período: {selectedPeriod}
+              Período: {selectedPeriod} | Métrica: {selectedMetric === 'all' ? 'Todas' : chartConfig[selectedMetric as keyof typeof chartConfig]?.label}
             </div>
           </div>
           <ChartContainer config={chartConfig} className="h-[400px] w-full">
-            <AreaChart data={progressData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+            <AreaChart data={getFilteredProgressData()} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
               <defs>
-                <linearGradient id="progressGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-                  <stop offset="50%" stopColor="#A78BFA" stopOpacity={0.4}/>
-                  <stop offset="100%" stopColor="#C4B5FD" stopOpacity={0.1}/>
+                <linearGradient id="colorProgress" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.1}/>
+                </linearGradient>
+                <linearGradient id="colorOkrs" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0.1}/>
+                </linearGradient>
+                <linearGradient id="colorTasks" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--chart-3))" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0.1}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -239,7 +326,6 @@ const Dashboard = () => {
                 axisLine={false}
                 tickLine={false}
                 tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
-                domain={[0, 100]}
               />
               <ChartTooltip 
                 content={<ChartTooltipContent />}
@@ -249,15 +335,7 @@ const Dashboard = () => {
                   borderRadius: "8px"
                 }}
               />
-              <Area 
-                type="monotone" 
-                dataKey="progress" 
-                stroke="#8B5CF6" 
-                strokeWidth={3}
-                fill="url(#progressGradient)"
-                dot={{ fill: "#8B5CF6", strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: "#8B5CF6", strokeWidth: 2 }}
-              />
+              {renderProgressAreas()}
             </AreaChart>
           </ChartContainer>
         </div>
@@ -328,16 +406,16 @@ const Dashboard = () => {
         <TaskSummary />
       </div>
 
-      {/* Atividades recentes com espaçamento reduzido */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div className="flex items-center justify-between mb-4">
+      {/* Atividades recentes modernizadas */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">Atividades Recentes</h3>
           <Clock className="w-5 h-5 text-gray-500" />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-4">
           {recentActivities.map((activity) => (
-            <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
-              <div className={`flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-semibold ${getActivityColor(activity.type)}`}>
+            <div key={activity.id} className="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
+              <div className={`flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center text-xs font-semibold ${getActivityColor(activity.type)}`}>
                 {activity.avatar}
               </div>
               <div className="flex-1 min-w-0">
@@ -354,7 +432,7 @@ const Dashboard = () => {
             </div>
           ))}
         </div>
-        <div className="mt-3 text-center">
+        <div className="mt-4 text-center">
           <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
             Ver todas as atividades
           </button>
