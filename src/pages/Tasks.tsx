@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
-import { Plus, CheckSquare, Clock, User, Target, Calendar, Filter } from 'lucide-react';
+import { Plus, CheckSquare, Clock, User, Target, Calendar, Filter, LayoutGrid, List } from 'lucide-react';
+import KanbanBoard from '../components/Tasks/KanbanBoard';
 
 interface Task {
   id: string;
@@ -70,6 +70,7 @@ const Tasks = () => {
 
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'pending' | 'in-progress' | 'completed' | 'overdue'>('all');
   const [selectedAssignee, setSelectedAssignee] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
 
   const filteredTasks = tasks.filter(task => {
     const statusMatch = selectedStatus === 'all' || task.status === selectedStatus;
@@ -112,10 +113,34 @@ const Tasks = () => {
           <h1 className="text-2xl font-bold text-gray-900">Gestão de Tarefas</h1>
           <p className="text-gray-600 mt-1">Acompanhe e gerencie todas as tarefas da equipe</p>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
-          <Plus size={20} />
-          <span>Nova Tarefa</span>
-        </button>
+        <div className="flex items-center space-x-3">
+          {/* Toggle de visualização */}
+          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('kanban')}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                viewMode === 'kanban' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'
+              }`}
+            >
+              <LayoutGrid size={16} />
+              <span className="text-sm">Kanban</span>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600'
+              }`}
+            >
+              <List size={16} />
+              <span className="text-sm">Lista</span>
+            </button>
+          </div>
+          
+          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+            <Plus size={20} />
+            <span>Nova Tarefa</span>
+          </button>
+        </div>
       </div>
 
       {/* Filtros */}
@@ -157,66 +182,70 @@ const Tasks = () => {
         </div>
       </div>
 
-      {/* Lista de Tarefas */}
-      <div className="space-y-4">
-        {filteredTasks.map((task) => (
-          <div key={task.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <CheckSquare className="text-blue-600" size={24} />
-                  <h3 className="text-lg font-semibold text-gray-900">{task.title}</h3>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
-                    {task.status}
-                  </span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
-                    {task.priority}
-                  </span>
+      {/* Conteúdo baseado no modo de visualização */}
+      {viewMode === 'kanban' ? (
+        <KanbanBoard tasks={filteredTasks} />
+      ) : (
+        <div className="space-y-4">
+          {filteredTasks.map((task) => (
+            <div key={task.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <CheckSquare className="text-blue-600" size={24} />
+                    <h3 className="text-lg font-semibold text-gray-900">{task.title}</h3>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
+                      {task.status}
+                    </span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
+                      {task.priority}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 mb-3">{task.description}</p>
                 </div>
-                <p className="text-gray-600 mb-3">{task.description}</p>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <User size={16} />
-                <span>{task.assignee}</span>
-              </div>
-              
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Calendar size={16} />
-                <span>{task.startDate} - {task.endDate}</span>
-              </div>
-              
-              {task.okrId && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <Target size={16} />
-                  <span className="truncate">{task.okrTitle}</span>
+                  <User size={16} />
+                  <span>{task.assignee}</span>
                 </div>
-              )}
-              
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Clock size={16} />
-                <span>Progresso: {task.progress}%</span>
+                
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <Calendar size={16} />
+                  <span>{task.startDate} - {task.endDate}</span>
+                </div>
+                
+                {task.okrId && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <Target size={16} />
+                    <span className="truncate">{task.okrTitle}</span>
+                  </div>
+                )}
+                
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <Clock size={16} />
+                  <span>Progresso: {task.progress}%</span>
+                </div>
               </div>
-            </div>
 
-            {/* Barra de Progresso */}
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-gray-700">Progresso</span>
-                <span className="text-sm text-gray-500">{task.progress}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(task.progress)}`}
-                  style={{ width: `${task.progress}%` }}
-                />
+              {/* Barra de Progresso */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-700">Progresso</span>
+                  <span className="text-sm text-gray-500">{task.progress}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(task.progress)}`}
+                    style={{ width: `${task.progress}%` }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {filteredTasks.length === 0 && (
         <div className="text-center py-12">
