@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Plus, CheckSquare, Clock, User, Target, Calendar, Filter, LayoutGrid, List } from 'lucide-react';
+import { Plus, CheckSquare, Clock, User, Target, Calendar, Filter, LayoutGrid, List, Building2 } from 'lucide-react';
 import KanbanBoard from '../components/Tasks/KanbanBoard';
 import TaskForm from '../components/Tasks/TaskForm';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +17,7 @@ interface Task {
   okrId?: string;
   okrTitle?: string;
   progress: number;
+  department?: string;
 }
 
 const Tasks = () => {
@@ -32,7 +34,8 @@ const Tasks = () => {
       priority: 'high',
       okrId: '1',
       okrTitle: 'Aumentar receita em 25%',
-      progress: 65
+      progress: 65,
+      department: 'TI'
     },
     {
       id: '2',
@@ -45,7 +48,8 @@ const Tasks = () => {
       priority: 'medium',
       okrId: '2',
       okrTitle: 'Melhorar satisfação do cliente',
-      progress: 0
+      progress: 0,
+      department: 'Atendimento'
     },
     {
       id: '3',
@@ -56,7 +60,8 @@ const Tasks = () => {
       endDate: '2024-01-30',
       status: 'overdue',
       priority: 'high',
-      progress: 80
+      progress: 80,
+      department: 'Vendas'
     },
     {
       id: '4',
@@ -67,19 +72,24 @@ const Tasks = () => {
       endDate: '2024-02-20',
       status: 'completed',
       priority: 'medium',
-      progress: 100
+      progress: 100,
+      department: 'RH'
     }
   ]);
 
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'pending' | 'in-progress' | 'completed' | 'overdue'>('all');
   const [selectedAssignee, setSelectedAssignee] = useState<string>('all');
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'kanban' | 'list'>('kanban');
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+
+  const departments = ['Vendas', 'Marketing', 'TI', 'RH', 'Financeiro', 'Atendimento', 'Operações'];
 
   const filteredTasks = tasks.filter(task => {
     const statusMatch = selectedStatus === 'all' || task.status === selectedStatus;
     const assigneeMatch = selectedAssignee === 'all' || task.assignee === selectedAssignee;
-    return statusMatch && assigneeMatch;
+    const departmentMatch = selectedDepartment === 'all' || task.department === selectedDepartment;
+    return statusMatch && assigneeMatch && departmentMatch;
   });
 
   const handleTaskMove = (taskId: string, newStatus: string) => {
@@ -134,6 +144,31 @@ const Tasks = () => {
 
   const uniqueAssignees = Array.from(new Set(tasks.map(task => task.assignee)));
 
+  const clearFilters = () => {
+    setSelectedStatus('all');
+    setSelectedAssignee('all');
+    setSelectedDepartment('all');
+  };
+
+  const getStatusLabel = (status: string) => {
+    const labels = {
+      pending: 'Pendente',
+      'in-progress': 'Em Andamento',
+      completed: 'Concluída',
+      overdue: 'Atrasada'
+    };
+    return labels[status as keyof typeof labels] || status;
+  };
+
+  const getPriorityLabel = (priority: string) => {
+    const labels = {
+      low: 'Baixa',
+      medium: 'Média',
+      high: 'Alta'
+    };
+    return labels[priority as keyof typeof labels] || priority;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -176,12 +211,20 @@ const Tasks = () => {
 
       {/* Filtros */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div className="flex items-center space-x-4 mb-4">
-          <Filter className="text-gray-400" size={20} />
-          <span className="font-medium text-gray-700">Filtros:</span>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-4">
+            <Filter className="text-gray-400" size={20} />
+            <span className="font-medium text-gray-700">Filtros:</span>
+          </div>
+          <button
+            onClick={clearFilters}
+            className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+          >
+            Limpar filtros
+          </button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
             <select
@@ -198,6 +241,20 @@ const Tasks = () => {
           </div>
           
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Departamento</label>
+            <select
+              value={selectedDepartment}
+              onChange={(e) => setSelectedDepartment(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">Todos os Departamentos</option>
+              {departments.map(dept => (
+                <option key={dept} value={dept}>{dept}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Responsável</label>
             <select
               value={selectedAssignee}
@@ -210,6 +267,48 @@ const Tasks = () => {
               ))}
             </select>
           </div>
+        </div>
+
+        {/* Filtros ativos */}
+        {(selectedStatus !== 'all' || selectedDepartment !== 'all' || selectedAssignee !== 'all') && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="text-sm text-gray-600">Filtros ativos:</span>
+            {selectedStatus !== 'all' && (
+              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                Status: {getStatusLabel(selectedStatus)}
+              </span>
+            )}
+            {selectedDepartment !== 'all' && (
+              <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                Departamento: {selectedDepartment}
+              </span>
+            )}
+            {selectedAssignee !== 'all' && (
+              <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs">
+                Responsável: {selectedAssignee}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Resumo das tarefas */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="text-2xl font-bold text-gray-900">{filteredTasks.length}</div>
+          <div className="text-sm text-gray-600">Total de Tarefas</div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="text-2xl font-bold text-blue-600">{filteredTasks.filter(t => t.status === 'in-progress').length}</div>
+          <div className="text-sm text-gray-600">Em Andamento</div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="text-2xl font-bold text-green-600">{filteredTasks.filter(t => t.status === 'completed').length}</div>
+          <div className="text-sm text-gray-600">Concluídas</div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="text-2xl font-bold text-red-600">{filteredTasks.filter(t => t.status === 'overdue').length}</div>
+          <div className="text-sm text-gray-600">Atrasadas</div>
         </div>
       </div>
 
