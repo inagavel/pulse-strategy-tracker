@@ -24,7 +24,7 @@ const Employees = () => {
     {
       id: '1',
       name: 'João Silva',
-      position: 'Gerente de Vendas',
+      position: 'Gestor de Vendas',
       department: 'Vendas',
       email: 'joao.silva@empresa.com',
       phone: '+351 912 345 678',
@@ -54,7 +54,7 @@ const Employees = () => {
     {
       id: '3',
       name: 'Pedro Oliveira',
-      position: 'Desenvolvedor Senior',
+      position: 'Programador Sénior',
       department: 'Tecnologia',
       email: 'pedro.oliveira@empresa.com',
       phone: '+351 914 567 890',
@@ -115,7 +115,7 @@ const Employees = () => {
       phone: newEmployeeData.phone || '',
       location: newEmployeeData.location || '',
       avatar: avatar.toUpperCase(),
-      performance: Math.floor(Math.random() * 20) + 80, // Random performance between 80-100
+      performance: Math.floor(Math.random() * 20) + 80,
       tasksCompleted: Math.floor(Math.random() * 20) + 5,
       activeTasks: Math.floor(Math.random() * 8) + 2,
       okrsAssigned: Math.floor(Math.random() * 3) + 1,
@@ -129,15 +129,15 @@ const Employees = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Colaboradores</h1>
-          <p className="text-gray-600 mt-1">Gerencie a equipe e acompanhe o desempenho</p>
+          <h1 className="text-2xl font-bold text-gray-900">Funcionários</h1>
+          <p className="text-gray-600 mt-1">Gira a equipa e acompanha o desempenho</p>
         </div>
         <button 
           onClick={() => setShowEmployeeForm(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
         >
           <Plus size={20} />
-          <span>Novo Colaborador</span>
+          <span>Novo Funcionário</span>
         </button>
       </div>
 
@@ -146,7 +146,7 @@ const Employees = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total de Colaboradores</p>
+              <p className="text-sm font-medium text-gray-600">Total de Funcionários</p>
               <p className="text-2xl font-bold text-gray-900">{employees.length}</p>
             </div>
             <Users className="w-8 h-8 text-blue-600" />
@@ -168,7 +168,7 @@ const Employees = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Tarefas Ativas</p>
+              <p className="text-sm font-medium text-gray-600">Tarefas Activas</p>
               <p className="text-2xl font-bold text-gray-900">
                 {employees.reduce((acc, emp) => acc + emp.activeTasks, 0)}
               </p>
@@ -247,7 +247,7 @@ const Employees = () => {
                   </div>
                   <div className="text-center">
                     <p className="text-lg font-semibold text-gray-900">{employee.activeTasks}</p>
-                    <p className="text-xs text-gray-600">Tarefas Ativas</p>
+                    <p className="text-xs text-gray-600">Tarefas Activas</p>
                   </div>
                   <div className="text-center">
                     <p className="text-lg font-semibold text-gray-900">{employee.okrsAssigned}</p>

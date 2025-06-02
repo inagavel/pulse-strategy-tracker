@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { BarChart3, PieChart, TrendingUp, Download, Calendar, FileText } from 'lucide-react';
 import { exportReportToPDF } from '../utils/pdfExport';
@@ -7,9 +8,9 @@ const Reports = () => {
 
   const reportData = {
     okrCompletion: [
-      { quarter: 'Q1 2024', completed: 85, total: 100 },
-      { quarter: 'Q4 2023', completed: 78, total: 100 },
-      { quarter: 'Q3 2023', completed: 92, total: 100 },
+      { quarter: 'T1 2024', completed: 85, total: 100 },
+      { quarter: 'T4 2023', completed: 78, total: 100 },
+      { quarter: 'T3 2023', completed: 92, total: 100 },
     ],
     taskStats: {
       completed: 89,
@@ -93,7 +94,7 @@ const Reports = () => {
           <div className="text-center">
             <div className="text-3xl font-bold text-orange-600 mb-1">4</div>
             <div className="text-sm text-gray-600">Departamentos</div>
-            <div className="text-xs text-orange-600 mt-1">47 colaboradores</div>
+            <div className="text-xs text-orange-600 mt-1">47 funcionários</div>
           </div>
         </div>
       </div>
@@ -125,11 +126,11 @@ const Reports = () => {
           </div>
         </div>
 
-        {/* Status das Tarefas */}
+        {/* Estado das Tarefas */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
             <PieChart className="text-blue-600" size={24} />
-            <span>Status das Tarefas</span>
+            <span>Estado das Tarefas</span>
           </h3>
           
           <div className="space-y-3">
@@ -183,21 +184,21 @@ const Reports = () => {
                     style={{ width: `${dept.performance}%` }}
                   />
                 </div>
-                <div className="text-xs text-gray-500 mt-1">{dept.tasks} tarefas ativas</div>
+                <div className="text-xs text-gray-500 mt-1">{dept.tasks} tarefas activas</div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Métricas de Colaboradores */}
+      {/* Métricas de Funcionários */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Métricas de Colaboradores</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Métricas de Funcionários</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="text-center p-4 border border-gray-100 rounded-lg">
             <div className="text-2xl font-bold text-gray-900 mb-1">{reportData.employeeMetrics.totalEmployees}</div>
-            <div className="text-sm text-gray-600">Total de Colaboradores</div>
+            <div className="text-sm text-gray-600">Total de Funcionários</div>
           </div>
           <div className="text-center p-4 border border-gray-100 rounded-lg">
             <div className="text-2xl font-bold text-blue-600 mb-1">{reportData.employeeMetrics.avgPerformance}%</div>

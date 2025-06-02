@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Plus, UserCheck, Users, Calendar, Star, Target, TrendingUp, Award, UserPlus } from 'lucide-react';
 import EvaluationForm from '../components/Performance/EvaluationForm';
@@ -30,7 +31,7 @@ const Performance = () => {
       id: '1',
       employeeName: 'João Silva',
       department: 'Vendas',
-      period: 'Q1 2024',
+      period: 'T1 2024',
       status: 'completed',
       overallScore: 4.2,
       evaluatedBy: 'Maria Santos',
@@ -47,7 +48,7 @@ const Performance = () => {
       id: '2',
       employeeName: 'Ana Costa',
       department: 'TI',
-      period: 'Q1 2024',
+      period: 'T1 2024',
       status: 'in-progress',
       overallScore: 0,
       evaluatedBy: 'Pedro Oliveira',
@@ -64,7 +65,7 @@ const Performance = () => {
       id: '3',
       employeeName: 'Carlos Lima',
       department: 'Operações',
-      period: 'Q1 2024',
+      period: 'T1 2024',
       status: 'completed',
       overallScore: 3.8,
       evaluatedBy: 'Julia Ferreira',
@@ -83,7 +84,6 @@ const Performance = () => {
   const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [showEvaluationForm, setShowEvaluationForm] = useState(false);
-  const [showEmployeeForm, setShowEmployeeForm] = useState(false);
 
   const departments = ['Vendas', 'Marketing', 'TI', 'RH', 'Financeiro', 'Atendimento', 'Operações'];
 
@@ -128,17 +128,12 @@ const Performance = () => {
     setEvaluations([...evaluations, evaluation]);
   };
 
-  const handleNewEmployee = (employee: any) => {
-    console.log('Novo colaborador criado:', employee);
-    // Aqui você integraria com o sistema de colaboradores
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Avaliação de Desempenho</h1>
-          <p className="text-gray-600 mt-1">Gerencie e acompanhe as avaliações de desempenho dos colaboradores</p>
+          <p className="text-gray-600 mt-1">Gere e acompanha as avaliações de desempenho dos funcionários</p>
         </div>
         <button 
           onClick={() => setShowEvaluationForm(true)}
@@ -173,10 +168,10 @@ const Performance = () => {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="all">Todos os Períodos</option>
-              <option value="Q1 2024">Q1 2024</option>
-              <option value="Q2 2024">Q2 2024</option>
-              <option value="Q3 2024">Q3 2024</option>
-              <option value="Q4 2024">Q4 2024</option>
+              <option value="T1 2024">T1 2024</option>
+              <option value="T2 2024">T2 2024</option>
+              <option value="T3 2024">T3 2024</option>
+              <option value="T4 2024">T4 2024</option>
             </select>
           </div>
           
@@ -195,13 +190,13 @@ const Performance = () => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Estado</label>
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="all">Todos os Status</option>
+              <option value="all">Todos os Estados</option>
               <option value="pending">Pendente</option>
               <option value="in-progress">Em Andamento</option>
               <option value="completed">Concluída</option>
@@ -321,7 +316,7 @@ const Performance = () => {
             {evaluation.status !== 'completed' && (
               <div className="text-center py-4">
                 <div className="text-gray-500">
-                  {evaluation.status === 'pending' ? 'Avaliação aguardando início' : 'Avaliação em andamento...'}
+                  {evaluation.status === 'pending' ? 'Avaliação a aguardar início' : 'Avaliação em andamento...'}
                 </div>
                 <div className="text-sm text-gray-400 mt-1">
                   Avaliador: {evaluation.evaluatedBy}

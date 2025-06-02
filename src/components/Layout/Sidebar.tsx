@@ -16,12 +16,12 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { name: 'Dashboard', path: '/', icon: Home },
+  { name: 'Painel de Controlo', path: '/', icon: Home },
   { name: 'OKRs', path: '/okrs', icon: Target },
   { name: 'Análise SWOT', path: '/swot', icon: TrendingUp },
   { name: 'Avaliação de Desempenho', path: '/performance', icon: UserCheck },
   { name: 'Gestão de Tarefas', path: '/tasks', icon: CheckSquare },
-  { name: 'Colaboradores', path: '/employees', icon: Users },
+  { name: 'Funcionários', path: '/employees', icon: Users },
   { name: 'Relatórios', path: '/reports', icon: BarChart3 },
   { name: 'Configurações', path: '/settings', icon: Settings },
 ];

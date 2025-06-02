@@ -13,7 +13,7 @@ const okrs: OKRItem[] = [
   { id: '1', title: 'Aumentar receita em 25%', progress: 78, keyResults: 4 },
   { id: '2', title: 'Melhorar satisfação do cliente', progress: 65, keyResults: 3 },
   { id: '3', title: 'Reduzir custos operacionais', progress: 45, keyResults: 5 },
-  { id: '4', title: 'Expandir equipe técnica', progress: 90, keyResults: 2 },
+  { id: '4', title: 'Expandir equipa técnica', progress: 90, keyResults: 2 },
 ];
 
 const OKRProgress = () => {
@@ -37,7 +37,7 @@ const OKRProgress = () => {
                 style={{ width: `${okr.progress}%` }}
               />
             </div>
-            <p className="text-xs text-gray-500">{okr.keyResults} Key Results</p>
+            <p className="text-xs text-gray-500">{okr.keyResults} Resultados-Chave</p>
           </div>
         ))}
       </div>
