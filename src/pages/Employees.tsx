@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus, Search } from 'lucide-react';
 import EmployeeForm from '../components/Performance/EmployeeForm';
@@ -31,8 +30,8 @@ const Employees = () => {
       position: 'Gestor de Vendas',
       department: 'Vendas',
       email: 'joao.silva@empresa.com',
-      phone: '+351 912 345 678',
-      location: 'Lisboa, Portugal',
+      phone: '+244 923 456 789',
+      location: 'Luanda, Angola',
       avatar: 'JS',
       performance: 92,
       tasksCompleted: 24,
@@ -49,8 +48,8 @@ const Employees = () => {
       position: 'Especialista em Marketing',
       department: 'Marketing',
       email: 'maria.santos@empresa.com',
-      phone: '+351 913 456 789',
-      location: 'Porto, Portugal',
+      phone: '+244 934 567 890',
+      location: 'Benguela, Angola',
       avatar: 'MS',
       performance: 88,
       tasksCompleted: 18,
@@ -67,8 +66,8 @@ const Employees = () => {
       position: 'Programador Sénior',
       department: 'Tecnologia',
       email: 'pedro.oliveira@empresa.com',
-      phone: '+351 914 567 890',
-      location: 'Braga, Portugal',
+      phone: '+244 945 678 901',
+      location: 'Huambo, Angola',
       avatar: 'PO',
       performance: 95,
       tasksCompleted: 32,
@@ -85,8 +84,8 @@ const Employees = () => {
       position: 'Analista de RH',
       department: 'Recursos Humanos',
       email: 'ana.costa@empresa.com',
-      phone: '+351 915 678 901',
-      location: 'Coimbra, Portugal',
+      phone: '+244 956 789 012',
+      location: 'Lobito, Angola',
       avatar: 'AC',
       performance: 85,
       tasksCompleted: 16,
