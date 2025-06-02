@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
-import { Plus, Users, Mail, Phone, MapPin, Target, TrendingUp } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import EmployeeForm from '../components/Performance/EmployeeForm';
 
 interface Employee {
   id: string;
+  codigo: string;
   name: string;
   position: string;
   department: string;
@@ -17,12 +17,15 @@ interface Employee {
   activeTasks: number;
   okrsAssigned: number;
   joinDate: string;
+  gender: string;
+  status: string;
 }
 
 const Employees = () => {
   const [employees, setEmployees] = useState<Employee[]>([
     {
       id: '1',
+      codigo: 'EMP001',
       name: 'João Silva',
       position: 'Gestor de Vendas',
       department: 'Vendas',
@@ -34,7 +37,9 @@ const Employees = () => {
       tasksCompleted: 24,
       activeTasks: 5,
       okrsAssigned: 3,
-      joinDate: '2023-01-15'
+      joinDate: '2023-01-15',
+      gender: 'Masculino',
+      status: 'ACTIVADO'
     },
     {
       id: '2',
@@ -83,21 +88,17 @@ const Employees = () => {
     }
   ]);
 
-  const [selectedDepartment, setSelectedDepartment] = useState<string>('all');
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('ACTIVADO');
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
 
-  const filteredEmployees = selectedDepartment === 'all' 
-    ? employees 
-    : employees.filter(emp => emp.department === selectedDepartment);
+  const filteredEmployees = employees.filter(emp => {
+    const matchesDepartment = !selectedDepartment || emp.department === selectedDepartment;
+    const matchesStatus = !selectedStatus || emp.status === selectedStatus;
+    return matchesDepartment && matchesStatus;
+  });
 
   const departments = Array.from(new Set(employees.map(emp => emp.department)));
-
-  const getPerformanceColor = (performance: number) => {
-    if (performance >= 90) return 'text-green-600 bg-green-100';
-    if (performance >= 80) return 'text-blue-600 bg-blue-100';
-    if (performance >= 70) return 'text-yellow-600 bg-yellow-100';
-    return 'text-red-600 bg-red-100';
-  };
 
   const handleNewEmployee = (newEmployeeData: any) => {
     // Generate avatar initials from name
@@ -108,6 +109,7 @@ const Employees = () => {
 
     const newEmployee: Employee = {
       id: Date.now().toString(),
+      codigo: newEmployeeData.codigo,
       name: newEmployeeData.name,
       position: newEmployeeData.position,
       department: newEmployeeData.department,
@@ -119,145 +121,122 @@ const Employees = () => {
       tasksCompleted: Math.floor(Math.random() * 20) + 5,
       activeTasks: Math.floor(Math.random() * 8) + 2,
       okrsAssigned: Math.floor(Math.random() * 3) + 1,
-      joinDate: newEmployeeData.startDate
+      joinDate: newEmployeeData.startDate,
+      gender: newEmployeeData.gender,
+      status: newEmployeeData.status
     };
 
     setEmployees([...employees, newEmployee]);
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Funcionários</h1>
-          <p className="text-gray-600 mt-1">Gira a equipa e acompanha o desempenho</p>
-        </div>
+    <div className="bg-white min-h-screen">
+      <div className="border-b border-gray-200 bg-white px-6 py-4">
+        <h1 className="text-xl font-medium text-blue-600 uppercase tracking-wide">LISTA DE COLABORADORES</h1>
+      </div>
+
+      <div className="px-6 py-4">
         <button 
           onClick={() => setShowEmployeeForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          className="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition-colors flex items-center space-x-2 mb-6"
         >
-          <Plus size={20} />
-          <span>Novo Funcionário</span>
+          <Plus size={16} />
+          <span>Adicionar Colaborador</span>
         </button>
-      </div>
 
-      {/* Estatísticas Gerais */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
+        {/* Filtros */}
+        <div className="bg-gray-50 border border-gray-200 rounded p-4 mb-6">
+          <h3 className="font-medium text-gray-700 mb-3 uppercase">FILTROS</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total de Funcionários</p>
-              <p className="text-2xl font-bold text-gray-900">{employees.length}</p>
+              <label className="block text-sm text-gray-600 mb-1">Vínculos</label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="ACTIVADO">ACTIVADO</option>
+                <option value="DESACTIVADO">DESACTIVADO</option>
+                <option value="">Todos</option>
+              </select>
             </div>
-            <Users className="w-8 h-8 text-blue-600" />
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Performance Média</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {Math.round(employees.reduce((acc, emp) => acc + emp.performance, 0) / employees.length)}%
-              </p>
+              <label className="block text-sm text-gray-600 mb-1">Departamentos</label>
+              <select
+                value={selectedDepartment}
+                onChange={(e) => setSelectedDepartment(e.target.value)}
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Todos os Departamentos</option>
+                {departments.map(dept => (
+                  <option key={dept} value={dept}>{dept}</option>
+                ))}
+              </select>
             </div>
-            <TrendingUp className="w-8 h-8 text-green-600" />
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Tarefas Activas</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {employees.reduce((acc, emp) => acc + emp.activeTasks, 0)}
-              </p>
-            </div>
-            <Target className="w-8 h-8 text-orange-600" />
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Departamentos</p>
-              <p className="text-2xl font-bold text-gray-900">{departments.length}</p>
-            </div>
-            <Users className="w-8 h-8 text-purple-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Filtros */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div className="flex items-center space-x-4">
-          <span className="font-medium text-gray-700">Departamento:</span>
-          <select
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="all">Todos os Departamentos</option>
-            {departments.map(dept => (
-              <option key={dept} value={dept}>{dept}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredEmployees.map((employee) => (
-          <div key={employee.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-start space-x-4">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                {employee.avatar}
-              </div>
-              
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{employee.name}</h3>
-                    <p className="text-sm text-gray-600">{employee.position}</p>
-                    <p className="text-sm text-blue-600 font-medium">{employee.department}</p>
-                  </div>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${getPerformanceColor(employee.performance)}`}>
-                    {employee.performance}% Performance
-                  </div>
-                </div>
-
-                <div className="space-y-1 mb-4">
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <Mail size={14} />
-                    <span>{employee.email}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <Phone size={14} />
-                    <span>{employee.phone}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <MapPin size={14} />
-                    <span>{employee.location}</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
-                  <div className="text-center">
-                    <p className="text-lg font-semibold text-gray-900">{employee.tasksCompleted}</p>
-                    <p className="text-xs text-gray-600">Tarefas Concluídas</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-semibold text-gray-900">{employee.activeTasks}</p>
-                    <p className="text-xs text-gray-600">Tarefas Activas</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-semibold text-gray-900">{employee.okrsAssigned}</p>
-                    <p className="text-xs text-gray-600">OKRs Atribuídos</p>
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-end">
+              <button className="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition-colors flex items-center space-x-2">
+                <Search size={16} />
+                <span>Pesquisar</span>
+              </button>
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* Tabela */}
+        <div className="bg-white border border-gray-200 rounded overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">CÓDIGO</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">NOME</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">TELEFONE</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">EMAIL</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">GÉNERO</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 uppercase">ACÇÕES</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEmployees.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                    Nenhum colaborador encontrado
+                  </td>
+                </tr>
+              ) : (
+                filteredEmployees.map((employee) => (
+                  <tr key={employee.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm text-gray-900">{employee.codigo}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{employee.name}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{employee.phone}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{employee.email}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{employee.gender}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">
+                      <button className="text-blue-600 hover:text-blue-800 text-sm">
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Paginação */}
+        <div className="flex items-center justify-between mt-4">
+          <div className="text-sm text-gray-500">
+            {filteredEmployees.length} de {employees.length}
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-500">Itens por página:</span>
+            <select className="border border-gray-300 rounded px-2 py-1 text-sm">
+              <option>5</option>
+              <option>10</option>
+              <option>25</option>
+              <option>50</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <EmployeeForm
