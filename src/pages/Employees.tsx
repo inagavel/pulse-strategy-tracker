@@ -148,7 +148,7 @@ const Employees = () => {
       <div className="px-6 py-4">
         <button 
           onClick={() => setShowEmployeeForm(true)}
-          className="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition-colors flex items-center space-x-2 mb-6"
+          className="bg-red-900 text-white px-4 py-2 rounded text-sm hover:bg-red-800 transition-colors flex items-center space-x-2 mb-6"
         >
           <Plus size={16} />
           <span>Adicionar Colaborador</span>
@@ -184,7 +184,7 @@ const Employees = () => {
               </select>
             </div>
             <div className="flex items-end">
-              <button className="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition-colors flex items-center space-x-2">
+              <button className="bg-red-900 text-white px-4 py-2 rounded text-sm hover:bg-red-800 transition-colors flex items-center space-x-2">
                 <Search size={16} />
                 <span>Pesquisar</span>
               </button>

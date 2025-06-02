@@ -56,12 +56,12 @@ const Reports = () => {
           </select>
           <button 
             onClick={handleExportPDF}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2"
+            className="bg-red-900 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-colors flex items-center space-x-2"
           >
             <FileText size={20} />
             <span>Exportar PDF</span>
           </button>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+          <button className="bg-red-900 text-white px-4 py-2 rounded-lg hover:bg-red-800 transition-colors flex items-center space-x-2">
             <Download size={20} />
             <span>Exportar</span>
           </button>
