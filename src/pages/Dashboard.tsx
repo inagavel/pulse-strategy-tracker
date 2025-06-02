@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import MetricCard from '../components/Dashboard/MetricCard';
 import OKRProgress from '../components/Dashboard/OKRProgress';
 import TaskSummary from '../components/Dashboard/TaskSummary';
@@ -13,59 +13,129 @@ const Dashboard = () => {
   const [selectedDepartment, setSelectedDepartment] = useState('all');
   const [selectedMetric, setSelectedMetric] = useState('all');
 
-  // Dados para o gráfico de evolução do progresso
-  const progressData = [
-    { month: 'Jan', progress: 65, okrs: 12, tasks: 85 },
-    { month: 'Fev', progress: 72, okrs: 15, tasks: 92 },
-    { month: 'Mar', progress: 78, okrs: 18, tasks: 88 },
-    { month: 'Abr', progress: 75, okrs: 16, tasks: 95 },
-    { month: 'Mai', progress: 85, okrs: 22, tasks: 98 },
-    { month: 'Jun', progress: 88, okrs: 25, tasks: 90 },
-    { month: 'Jul', progress: 92, okrs: 28, tasks: 94 },
-    { month: 'Ago', progress: 89, okrs: 26, tasks: 96 },
-    { month: 'Set', progress: 94, okrs: 30, tasks: 98 },
-    { month: 'Out', progress: 91, okrs: 28, tasks: 92 },
-    { month: 'Nov', progress: 96, okrs: 32, tasks: 99 },
-    { month: 'Dez', progress: 98, okrs: 35, tasks: 97 }
+  // Dados reais dos funcionários (coerentes com a página Employees)
+  const realEmployees = [
+    {
+      id: '1',
+      name: 'João Silva',
+      department: 'Vendas',
+      performance: 92,
+      tasksCompleted: 24,
+      activeTasks: 5,
+      okrsAssigned: 3,
+      status: 'ACTIVADO'
+    },
+    {
+      id: '2',
+      name: 'Maria Santos',
+      department: 'Marketing',
+      performance: 88,
+      tasksCompleted: 18,
+      activeTasks: 3,
+      okrsAssigned: 2,
+      status: 'ACTIVADO'
+    },
+    {
+      id: '3',
+      name: 'Pedro Oliveira',
+      department: 'Tecnologia',
+      performance: 95,
+      tasksCompleted: 32,
+      activeTasks: 7,
+      okrsAssigned: 4,
+      status: 'ACTIVADO'
+    },
+    {
+      id: '4',
+      name: 'Ana Costa',
+      department: 'RH',
+      performance: 85,
+      tasksCompleted: 16,
+      activeTasks: 4,
+      okrsAssigned: 1,
+      status: 'ACTIVADO'
+    }
   ];
 
-  // Dados para o gráfico por departamento
-  const allDepartmentData = [
-    { department: 'Vendas', completed: 95, inProgress: 12, pending: 8 },
-    { department: 'Marketing', completed: 88, inProgress: 15, pending: 5 },
-    { department: 'TI', completed: 92, inProgress: 18, pending: 7 },
-    { department: 'RH', completed: 85, inProgress: 10, pending: 12 },
-    { department: 'Financeiro', completed: 90, inProgress: 8, pending: 6 },
-    { department: 'Operações', completed: 87, inProgress: 20, pending: 10 }
+  // OKRs reais (coerentes com os dados do sistema)
+  const realOKRs = [
+    { id: '1', title: 'Aumentar receita em 25%', progress: 78, keyResults: 4, department: 'Vendas' },
+    { id: '2', title: 'Melhorar satisfação do cliente', progress: 65, keyResults: 3, department: 'Marketing' },
+    { id: '3', title: 'Reduzir custos operacionais', progress: 45, keyResults: 5, department: 'RH' },
+    { id: '4', title: 'Expandir equipa técnica', progress: 90, keyResults: 2, department: 'Tecnologia' },
   ];
+
+  // Calcular métricas dinâmicas baseadas nos dados reais
+  const calculatedMetrics = useMemo(() => {
+    const activeEmployees = realEmployees.filter(emp => emp.status === 'ACTIVADO');
+    const totalTasks = activeEmployees.reduce((sum, emp) => sum + emp.tasksCompleted + emp.activeTasks, 0);
+    const completedTasks = activeEmployees.reduce((sum, emp) => sum + emp.tasksCompleted, 0);
+    const avgPerformance = Math.round(activeEmployees.reduce((sum, emp) => sum + emp.performance, 0) / activeEmployees.length);
+    const completedOKRs = realOKRs.filter(okr => okr.progress >= 100).length;
+    const avgOKRProgress = Math.round(realOKRs.reduce((sum, okr) => sum + okr.progress, 0) / realOKRs.length);
+
+    return {
+      activeEmployees: activeEmployees.length,
+      avgPerformance,
+      totalTasks,
+      completedTasks,
+      taskCompletionRate: Math.round((completedTasks / totalTasks) * 100),
+      okrCompletionRate: avgOKRProgress,
+      completedOKRs
+    };
+  }, [realEmployees, realOKRs]);
+
+  // Dados para o gráfico de evolução baseados nos dados reais
+  const progressData = [
+    { month: 'Jan', progress: 65, okrs: 12, tasks: 85 },
+    { month: 'Fev', progress: 70, okrs: 15, tasks: 87 },
+    { month: 'Mar', progress: 75, okrs: 18, tasks: 88 },
+    { month: 'Abr', progress: 72, okrs: 16, tasks: 90 },
+    { month: 'Mai', progress: 80, okrs: 20, tasks: 92 },
+    { month: 'Jun', progress: 82, okrs: 22, tasks: 88 },
+    { month: 'Jul', progress: 85, okrs: 24, tasks: 91 },
+    { month: 'Ago', progress: 83, okrs: 23, tasks: 93 },
+    { month: 'Set', progress: 87, okrs: 26, tasks: 95 },
+    { month: 'Out', progress: 85, okrs: 25, tasks: 92 },
+    { month: 'Nov', progress: calculatedMetrics.avgPerformance - 2, okrs: 28, tasks: calculatedMetrics.taskCompletionRate - 1 },
+    { month: 'Dez', progress: calculatedMetrics.avgPerformance, okrs: calculatedMetrics.okrCompletionRate / 3, tasks: calculatedMetrics.taskCompletionRate }
+  ];
+
+  // Dados por departamento baseados nos funcionários reais
+  const allDepartmentData = useMemo(() => {
+    const departments = ['Vendas', 'Marketing', 'Tecnologia', 'RH'];
+    return departments.map(dept => {
+      const deptEmployees = realEmployees.filter(emp => emp.department === dept);
+      const completed = deptEmployees.reduce((sum, emp) => sum + emp.tasksCompleted, 0);
+      const inProgress = deptEmployees.reduce((sum, emp) => sum + emp.activeTasks, 0);
+      const pending = Math.floor(Math.random() * 10) + 2; // Simulado
+      
+      return {
+        department: dept,
+        completed,
+        inProgress,
+        pending
+      };
+    });
+  }, [realEmployees]);
 
   // Filtrar dados por departamento
   const filteredDepartmentData = selectedDepartment === 'all' 
     ? allDepartmentData 
     : allDepartmentData.filter(item => item.department.toLowerCase() === selectedDepartment);
 
-  // Filtrar dados de progresso por métrica
-  const getFilteredProgressData = () => {
-    if (selectedMetric === 'all') return progressData;
-    
-    return progressData.map(item => ({
-      month: item.month,
-      [selectedMetric]: item[selectedMetric as keyof typeof item]
-    }));
-  };
-
   const chartConfig = {
     progress: {
       label: "Progresso Geral (%)",
-      color: "#8B5CF6", // Roxo vibrante
+      color: "#8B5CF6",
     },
     okrs: {
       label: "OKRs Completados",
-      color: "#F59E0B", // Amarelo/laranja vibrante
+      color: "#F59E0B",
     },
     tasks: {
       label: "Tarefas Completadas (%)",
-      color: "#10B981", // Verde vibrante
+      color: "#10B981",
     },
     completed: {
       label: "Concluídas",
@@ -81,43 +151,52 @@ const Dashboard = () => {
     },
   };
 
-  // Atividades recentes modernizadas
+  const getFilteredProgressData = () => {
+    if (selectedMetric === 'all') return progressData;
+    
+    return progressData.map(item => ({
+      month: item.month,
+      [selectedMetric]: item[selectedMetric as keyof typeof item]
+    }));
+  };
+
+  // Atividades recentes baseadas nos dados reais
   const recentActivities = [
     {
       id: 1,
       user: 'João Silva',
-      action: 'completou o OKR',
-      target: 'Aumentar vendas Q1',
+      action: 'completou',
+      target: `${realEmployees[0]?.tasksCompleted} tarefas este mês`,
       time: '2 min atrás',
-      type: 'okr',
+      type: 'task',
       avatar: 'JS'
     },
     {
       id: 2,
       user: 'Maria Santos',
-      action: 'criou nova tarefa no projeto',
-      target: 'Alpha',
+      action: 'atingiu',
+      target: `${realEmployees[1]?.performance}% de performance`,
       time: '15 min atrás',
-      type: 'task',
+      type: 'goal',
       avatar: 'MS'
     },
     {
       id: 3,
-      user: 'Equipe de Marketing',
-      action: 'atingiu',
-      target: '95% do objetivo mensal',
+      user: 'Pedro Oliveira',
+      action: 'liderou departamento com',
+      target: `${realEmployees[2]?.performance}% de performance`,
       time: '1 hora atrás',
-      type: 'goal',
-      avatar: 'EM'
+      type: 'okr',
+      avatar: 'PO'
     },
     {
       id: 4,
-      user: 'Pedro Oliveira',
-      action: 'atualizou análise SWOT do',
-      target: 'produto',
+      user: 'Ana Costa',
+      action: 'gere',
+      target: `${realEmployees[3]?.activeTasks} tarefas activas`,
       time: '2 horas atrás',
       type: 'analysis',
-      avatar: 'PO'
+      avatar: 'AC'
     }
   ];
 
@@ -220,10 +299,8 @@ const Dashboard = () => {
                 <SelectItem value="all">Todos</SelectItem>
                 <SelectItem value="vendas">Vendas</SelectItem>
                 <SelectItem value="marketing">Marketing</SelectItem>
-                <SelectItem value="ti">TI</SelectItem>
+                <SelectItem value="tecnologia">Tecnologia</SelectItem>
                 <SelectItem value="rh">RH</SelectItem>
-                <SelectItem value="financeiro">Financeiro</SelectItem>
-                <SelectItem value="operações">Operações</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -257,33 +334,33 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Métricas principais */}
+      {/* Métricas principais - agora dinâmicas */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="OKRs Atingidos"
-          value="85%"
-          change="+12% vs mês anterior"
+          value={`${calculatedMetrics.okrCompletionRate}%`}
+          change={`${calculatedMetrics.completedOKRs} de ${realOKRs.length} concluídos`}
           changeType="positive"
           icon={Target}
         />
         <MetricCard
           title="Colaboradores Ativos"
-          value="47"
-          change="+3 novos este mês"
+          value={calculatedMetrics.activeEmployees.toString()}
+          change="Todos os funcionários activos"
           changeType="positive"
           icon={Users}
         />
         <MetricCard
           title="Performance Geral"
-          value="92%"
-          change="+5% vs trimestre anterior"
+          value={`${calculatedMetrics.avgPerformance}%`}
+          change="Média dos funcionários"
           changeType="positive"
           icon={TrendingUp}
         />
         <MetricCard
-          title="ROI Projetos"
-          value="€125K"
-          change="+18% vs período anterior"
+          title="Taxa de Conclusão"
+          value={`${calculatedMetrics.taskCompletionRate}%`}
+          change={`${calculatedMetrics.completedTasks} de ${calculatedMetrics.totalTasks} tarefas`}
           changeType="positive"
           icon={DollarSign}
         />
@@ -406,7 +483,7 @@ const Dashboard = () => {
         <TaskSummary />
       </div>
 
-      {/* Atividades recentes modernizadas */}
+      {/* Atividades recentes actualizadas */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">Atividades Recentes</h3>
