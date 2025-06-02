@@ -47,7 +47,7 @@ const Reports = () => {
           <select
             value={selectedPeriod}
             onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-900 focus:border-transparent"
           >
             <option value="week">Esta Semana</option>
             <option value="month">Este Mês</option>
@@ -71,7 +71,7 @@ const Reports = () => {
       {/* Resumo Executivo */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-          <TrendingUp className="text-blue-600" size={24} />
+          <TrendingUp className="text-red-900" size={24} />
           <span>Resumo Executivo</span>
         </h3>
         
@@ -104,7 +104,7 @@ const Reports = () => {
         {/* Progresso de OKRs */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-            <BarChart3 className="text-blue-600" size={24} />
+            <BarChart3 className="text-red-900" size={24} />
             <span>Progresso de OKRs por Trimestre</span>
           </h3>
           
@@ -117,7 +117,7 @@ const Reports = () => {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
                   <div
-                    className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                    className="bg-red-900 h-3 rounded-full transition-all duration-300"
                     style={{ width: `${item.completed}%` }}
                   />
                 </div>
@@ -129,7 +129,7 @@ const Reports = () => {
         {/* Estado das Tarefas */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-            <PieChart className="text-blue-600" size={24} />
+            <PieChart className="text-red-900" size={24} />
             <span>Estado das Tarefas</span>
           </h3>
           
@@ -180,7 +180,7 @@ const Reports = () => {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    className="bg-red-900 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${dept.performance}%` }}
                   />
                 </div>
