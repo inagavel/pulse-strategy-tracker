@@ -10,30 +10,16 @@ import {
   FileText, 
   Settings,
   Home,
-  UserCheck,
-  MapPin,
-  Calendar,
-  ClipboardList
+  UserCheck
 } from 'lucide-react';
 
 const menuItems = [
   { name: 'Dashboard', path: '/', icon: Home },
-  { name: 'Assiduidade', path: '/attendance', icon: UserCheck },
-  { name: 'Salários', path: '/salaries', icon: FileText },
-  { name: 'Férias', path: '/holidays', icon: Calendar },
-  { name: 'Utilizadores', path: '/users', icon: Users },
-  { name: 'Colaboradores', path: '/employees', icon: Users },
-  { name: 'Assiduidade', path: '/attendance-management', icon: ClipboardList },
-  { name: 'Presenças', path: '/presences', icon: MapPin },
-  { name: 'Aprovações', path: '/approvals', icon: CheckSquare },
-  { name: 'Férias', path: '/vacation', icon: Calendar },
-  { name: 'Calendário', path: '/calendar', icon: Calendar },
-  { name: 'Aprovações', path: '/final-approvals', icon: CheckSquare },
-  { name: 'Disponibilização', path: '/availability', icon: ClipboardList },
   { name: 'OKRs', path: '/okrs', icon: Target },
   { name: 'Análise SWOT', path: '/swot', icon: TrendingUp },
   { name: 'Avaliação de Desempenho', path: '/performance', icon: UserCheck },
   { name: 'Gestão de Tarefas', path: '/tasks', icon: CheckSquare },
+  { name: 'Colaboradores', path: '/employees', icon: Users },
   { name: 'Relatórios', path: '/reports', icon: BarChart3 },
   { name: 'Configurações', path: '/settings', icon: Settings },
 ];
@@ -67,7 +53,7 @@ const Sidebar = () => {
                   to={item.path}
                   className={`flex items-center space-x-3 px-3 py-2 rounded text-sm transition-colors ${
                     isActive 
-                      ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' 
+                      ? 'bg-red-50 text-red-900 border-r-2 border-red-900' 
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
