@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Plus, Search } from 'lucide-react';
 import EmployeeForm from '../components/Performance/EmployeeForm';
@@ -43,6 +44,7 @@ const Employees = () => {
     },
     {
       id: '2',
+      codigo: 'EMP002',
       name: 'Maria Santos',
       position: 'Especialista em Marketing',
       department: 'Marketing',
@@ -54,10 +56,13 @@ const Employees = () => {
       tasksCompleted: 18,
       activeTasks: 3,
       okrsAssigned: 2,
-      joinDate: '2023-03-20'
+      joinDate: '2023-03-20',
+      gender: 'Feminino',
+      status: 'ACTIVADO'
     },
     {
       id: '3',
+      codigo: 'EMP003',
       name: 'Pedro Oliveira',
       position: 'Programador Sénior',
       department: 'Tecnologia',
@@ -69,10 +74,13 @@ const Employees = () => {
       tasksCompleted: 32,
       activeTasks: 7,
       okrsAssigned: 4,
-      joinDate: '2022-11-10'
+      joinDate: '2022-11-10',
+      gender: 'Masculino',
+      status: 'ACTIVADO'
     },
     {
       id: '4',
+      codigo: 'EMP004',
       name: 'Ana Costa',
       position: 'Analista de RH',
       department: 'Recursos Humanos',
@@ -84,7 +92,9 @@ const Employees = () => {
       tasksCompleted: 16,
       activeTasks: 4,
       okrsAssigned: 1,
-      joinDate: '2023-07-05'
+      joinDate: '2023-07-05',
+      gender: 'Feminino',
+      status: 'ACTIVADO'
     }
   ]);
 
