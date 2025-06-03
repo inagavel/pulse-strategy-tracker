@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
-import { Plus, Users, FileText, CheckCircle, Clock, Search } from 'lucide-react';
+import { Plus, Users, FileText, CheckCircle, Clock, Search, Clipboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import JobPostingForm from '../components/Recruitment/JobPostingForm';
 import CandidateList from '../components/Recruitment/CandidateList';
 import InterviewScheduler from '../components/Recruitment/InterviewScheduler';
+import TestingManager from '../components/Recruitment/TestingManager';
 import ContractManager from '../components/Recruitment/ContractManager';
 
 interface JobPosting {
@@ -22,7 +23,7 @@ interface JobPosting {
 }
 
 const Recruitment = () => {
-  const [activeTab, setActiveTab] = useState<'vagas' | 'candidatos' | 'entrevistas' | 'contratos'>('vagas');
+  const [activeTab, setActiveTab] = useState<'vagas' | 'candidatos' | 'testes' | 'entrevistas' | 'contratos'>('vagas');
   const [showJobForm, setShowJobForm] = useState(false);
   
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([
@@ -68,6 +69,7 @@ const Recruitment = () => {
   const tabs = [
     { id: 'vagas', label: 'Vagas de Emprego', icon: FileText },
     { id: 'candidatos', label: 'Candidatos', icon: Users },
+    { id: 'testes', label: 'Testes', icon: Clipboard },
     { id: 'entrevistas', label: 'Entrevistas', icon: Clock },
     { id: 'contratos', label: 'Contratos', icon: CheckCircle }
   ];
@@ -163,6 +165,11 @@ const Recruitment = () => {
         {/* Candidatos */}
         {activeTab === 'candidatos' && (
           <CandidateList />
+        )}
+
+        {/* Testes */}
+        {activeTab === 'testes' && (
+          <TestingManager />
         )}
 
         {/* Entrevistas */}
