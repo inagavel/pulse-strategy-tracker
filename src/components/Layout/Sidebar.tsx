@@ -14,7 +14,8 @@ import {
   UserPlus,
   DollarSign,
   Calculator,
-  Megaphone
+  Megaphone,
+  Shield
 } from 'lucide-react';
 
 const menuItems = [
@@ -28,6 +29,7 @@ const menuItems = [
   { name: 'Comercial', path: '/commercial', icon: DollarSign },
   { name: 'Marketing', path: '/marketing', icon: Megaphone },
   { name: 'Contabilidade Financeira', path: '/finance', icon: Calculator },
+  { name: 'Análise e Qualidade', path: '/quality', icon: Shield },
   { name: 'Relatórios', path: '/reports', icon: BarChart3 },
   { name: 'Configurações', path: '/settings', icon: Settings },
 ];
