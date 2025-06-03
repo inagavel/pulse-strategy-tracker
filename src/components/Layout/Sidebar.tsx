@@ -13,7 +13,8 @@ import {
   UserCheck,
   UserPlus,
   DollarSign,
-  Calculator
+  Calculator,
+  Megaphone
 } from 'lucide-react';
 
 const menuItems = [
@@ -25,6 +26,7 @@ const menuItems = [
   { name: 'Colaboradores', path: '/employees', icon: Users },
   { name: 'Recrutamento', path: '/recruitment', icon: UserPlus },
   { name: 'Comercial', path: '/commercial', icon: DollarSign },
+  { name: 'Marketing', path: '/marketing', icon: Megaphone },
   { name: 'Contabilidade Financeira', path: '/finance', icon: Calculator },
   { name: 'Relatórios', path: '/reports', icon: BarChart3 },
   { name: 'Configurações', path: '/settings', icon: Settings },
