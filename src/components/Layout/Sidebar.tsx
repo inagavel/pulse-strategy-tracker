@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -11,7 +12,8 @@ import {
   Home,
   UserCheck,
   UserPlus,
-  DollarSign
+  DollarSign,
+  Calculator
 } from 'lucide-react';
 
 const menuItems = [
@@ -23,6 +25,7 @@ const menuItems = [
   { name: 'Colaboradores', path: '/employees', icon: Users },
   { name: 'Recrutamento', path: '/recruitment', icon: UserPlus },
   { name: 'Comercial', path: '/commercial', icon: DollarSign },
+  { name: 'Contabilidade Financeira', path: '/finance', icon: Calculator },
   { name: 'Relatórios', path: '/reports', icon: BarChart3 },
   { name: 'Configurações', path: '/settings', icon: Settings },
 ];
