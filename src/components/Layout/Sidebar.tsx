@@ -10,7 +10,8 @@ import {
   FileText, 
   Settings,
   Home,
-  UserCheck
+  UserCheck,
+  UserPlus
 } from 'lucide-react';
 
 const menuItems = [
@@ -20,6 +21,7 @@ const menuItems = [
   { name: 'Avaliação de Desempenho', path: '/performance', icon: UserCheck },
   { name: 'Gestão de Tarefas', path: '/tasks', icon: CheckSquare },
   { name: 'Colaboradores', path: '/employees', icon: Users },
+  { name: 'Recrutamento', path: '/recruitment', icon: UserPlus },
   { name: 'Relatórios', path: '/reports', icon: BarChart3 },
   { name: 'Configurações', path: '/settings', icon: Settings },
 ];

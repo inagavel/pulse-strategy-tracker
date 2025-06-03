@@ -11,6 +11,7 @@ import SWOT from "./pages/SWOT";
 import Performance from "./pages/Performance";
 import Tasks from "./pages/Tasks";
 import Employees from "./pages/Employees";
+import Recruitment from "./pages/Recruitment";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/performance" element={<Performance />} />
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/employees" element={<Employees />} />
+            <Route path="/recruitment" element={<Recruitment />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
