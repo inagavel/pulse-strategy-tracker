@@ -85,7 +85,7 @@ const FinancialManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              €{totalReceitas.toLocaleString()}
+              Kz{totalReceitas.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -97,7 +97,7 @@ const FinancialManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              €{totalDespesas.toLocaleString()}
+              Kz{totalDespesas.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -109,7 +109,7 @@ const FinancialManager = () => {
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${saldoTotal >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              €{saldoTotal.toLocaleString()}
+              Kz{saldoTotal.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -203,7 +203,7 @@ const FinancialManager = () => {
                   name="valor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Valor (€)</FormLabel>
+                      <FormLabel>Valor (Kz)</FormLabel>
                       <FormControl>
                         <Input {...field} type="number" step="0.01" placeholder="0.00" />
                       </FormControl>
@@ -272,7 +272,7 @@ const FinancialManager = () => {
                     <td className={`py-2 font-medium ${
                       transaction.tipo === 'receita' ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      €{transaction.valor.toLocaleString()}
+                      Kz{transaction.valor.toLocaleString()}
                     </td>
                     <td className="py-2">{new Date(transaction.data).toLocaleDateString()}</td>
                     <td className="py-2">

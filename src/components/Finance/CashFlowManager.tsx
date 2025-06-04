@@ -74,7 +74,7 @@ const CashFlowManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              €{totalEntradas.toLocaleString()}
+              Kz{totalEntradas.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -86,7 +86,7 @@ const CashFlowManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              €{totalSaidas.toLocaleString()}
+              Kz{totalSaidas.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -98,7 +98,7 @@ const CashFlowManager = () => {
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${saldoFinal >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              €{saldoFinal.toLocaleString()}
+              Kz{saldoFinal.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -109,7 +109,7 @@ const CashFlowManager = () => {
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${(totalEntradas - totalSaidas) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {(totalEntradas - totalSaidas) >= 0 ? '+' : ''}€{(totalEntradas - totalSaidas).toLocaleString()}
+              {(totalEntradas - totalSaidas) >= 0 ? '+' : ''}Kz{(totalEntradas - totalSaidas).toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -150,9 +150,9 @@ const CashFlowManager = () => {
                   <th className="text-left py-2">Data</th>
                   <th className="text-left py-2">Categoria</th>
                   <th className="text-left py-2">Descrição</th>
-                  <th className="text-right py-2">Entradas (€)</th>
-                  <th className="text-right py-2">Saídas (€)</th>
-                  <th className="text-right py-2">Saldo (€)</th>
+                  <th className="text-right py-2">Entradas (Kz)</th>
+                  <th className="text-right py-2">Saídas (Kz)</th>
+                  <th className="text-right py-2">Saldo (Kz)</th>
                 </tr>
               </thead>
               <tbody>
@@ -171,15 +171,15 @@ const CashFlowManager = () => {
                     </td>
                     <td className="py-2">{item.descricao}</td>
                     <td className="py-2 text-right text-green-600">
-                      {item.entrada > 0 ? `€${item.entrada.toLocaleString()}` : '-'}
+                      {item.entrada > 0 ? `Kz${item.entrada.toLocaleString()}` : '-'}
                     </td>
                     <td className="py-2 text-right text-red-600">
-                      {item.saida > 0 ? `€${item.saida.toLocaleString()}` : '-'}
+                      {item.saida > 0 ? `Kz${item.saida.toLocaleString()}` : '-'}
                     </td>
                     <td className={`py-2 text-right font-medium ${
                       item.saldo >= 0 ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      €{item.saldo.toLocaleString()}
+                      Kz{item.saldo.toLocaleString()}
                     </td>
                   </tr>
                 ))}
@@ -198,17 +198,17 @@ const CashFlowManager = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 border rounded-lg">
               <h4 className="font-medium mb-2">Próximos 7 dias</h4>
-              <div className="text-2xl font-bold text-blue-600">€32.000</div>
+              <div className="text-2xl font-bold text-blue-600">Kz32.000</div>
               <p className="text-sm text-gray-600">Saldo previsto</p>
             </div>
             <div className="p-4 border rounded-lg">
               <h4 className="font-medium mb-2">Próximos 30 dias</h4>
-              <div className="text-2xl font-bold text-green-600">€45.000</div>
+              <div className="text-2xl font-bold text-green-600">Kz45.000</div>
               <p className="text-sm text-gray-600">Saldo previsto</p>
             </div>
             <div className="p-4 border rounded-lg">
               <h4 className="font-medium mb-2">Próximos 90 dias</h4>
-              <div className="text-2xl font-bold text-green-600">€78.000</div>
+              <div className="text-2xl font-bold text-green-600">Kz78.000</div>
               <p className="text-sm text-gray-600">Saldo previsto</p>
             </div>
           </div>

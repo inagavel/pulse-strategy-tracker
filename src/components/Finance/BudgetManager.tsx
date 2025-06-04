@@ -80,7 +80,7 @@ const BudgetManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              €{totalOrcado.toLocaleString()}
+              Kz{totalOrcado.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -92,7 +92,7 @@ const BudgetManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              €{totalRealizado.toLocaleString()}
+              Kz{totalRealizado.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -105,7 +105,7 @@ const BudgetManager = () => {
             <div className={`text-2xl font-bold ${
               totalRealizado <= totalOrcado ? 'text-green-600' : 'text-red-600'
             }`}>
-              {totalRealizado <= totalOrcado ? '-' : '+'}€{Math.abs(totalRealizado - totalOrcado).toLocaleString()}
+              {totalRealizado <= totalOrcado ? '-' : '+'}Kz{Math.abs(totalRealizado - totalOrcado).toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -156,9 +156,9 @@ const BudgetManager = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span>Orçado: €{budget.orcado.toLocaleString()}</span>
+                  <span>Orçado: Kz{budget.orcado.toLocaleString()}</span>
                   <span className={getStatusColor(budget.status)}>
-                    Realizado: €{budget.realizado.toLocaleString()}
+                    Realizado: Kz{budget.realizado.toLocaleString()}
                   </span>
                 </div>
                 
@@ -191,7 +191,7 @@ const BudgetManager = () => {
                   <div className="flex justify-between">
                     <span>Disponível:</span>
                     <span className={budget.orcado - budget.realizado >= 0 ? 'text-green-600' : 'text-red-600'}>
-                      €{Math.abs(budget.orcado - budget.realizado).toLocaleString()}
+                      Kz{Math.abs(budget.orcado - budget.realizado).toLocaleString()}
                       {budget.orcado - budget.realizado < 0 && ' (excesso)'}
                     </span>
                   </div>

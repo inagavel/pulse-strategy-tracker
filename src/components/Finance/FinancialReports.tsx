@@ -122,51 +122,51 @@ const FinancialReports = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 py-2 border-b">
                 <span className="font-medium">Receitas Brutas</span>
-                <span className="text-right">€{dreData.receitasBrutas.toLocaleString()}</span>
+                <span className="text-right">Kz{dreData.receitasBrutas.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b">
                 <span className="ml-4">(-) Deduções</span>
-                <span className="text-right text-red-600">€{dreData.deducoes.toLocaleString()}</span>
+                <span className="text-right text-red-600">Kz{dreData.deducoes.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b font-medium">
                 <span>Receitas Líquidas</span>
-                <span className="text-right">€{dreData.receitasLiquidas.toLocaleString()}</span>
+                <span className="text-right">Kz{dreData.receitasLiquidas.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b">
                 <span className="ml-4">(-) Custo dos Produtos</span>
-                <span className="text-right text-red-600">€{dreData.custoProdutos.toLocaleString()}</span>
+                <span className="text-right text-red-600">Kz{dreData.custoProdutos.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b font-medium">
                 <span>Lucro Bruto</span>
-                <span className="text-right text-green-600">€{dreData.lucroBruto.toLocaleString()}</span>
+                <span className="text-right text-green-600">Kz{dreData.lucroBruto.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b">
                 <span className="ml-4">(-) Despesas Operacionais</span>
-                <span className="text-right text-red-600">€{dreData.despesasOperacionais.toLocaleString()}</span>
+                <span className="text-right text-red-600">Kz{dreData.despesasOperacionais.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b font-medium">
                 <span>Lucro Operacional</span>
-                <span className="text-right text-green-600">€{dreData.lucroOperacional.toLocaleString()}</span>
+                <span className="text-right text-green-600">Kz{dreData.lucroOperacional.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b">
                 <span className="ml-4">(+) Receitas Financeiras</span>
-                <span className="text-right text-green-600">€{dreData.receitasFinanceiras.toLocaleString()}</span>
+                <span className="text-right text-green-600">Kz{dreData.receitasFinanceiras.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b">
                 <span className="ml-4">(-) Despesas Financeiras</span>
-                <span className="text-right text-red-600">€{dreData.despesasFinanceiras.toLocaleString()}</span>
+                <span className="text-right text-red-600">Kz{dreData.despesasFinanceiras.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b font-medium">
                 <span>Lucro Antes do IR</span>
-                <span className="text-right">€{dreData.lucroAntesIR.toLocaleString()}</span>
+                <span className="text-right">Kz{dreData.lucroAntesIR.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-b">
                 <span className="ml-4">(-) Imposto de Renda</span>
-                <span className="text-right text-red-600">€{dreData.impostoRenda.toLocaleString()}</span>
+                <span className="text-right text-red-600">Kz{dreData.impostoRenda.toLocaleString()}</span>
               </div>
               <div className="grid grid-cols-2 gap-4 py-2 border-t-2 border-gray-300 font-bold text-lg">
                 <span>Lucro Líquido</span>
-                <span className="text-right text-green-600">€{dreData.lucroLiquido.toLocaleString()}</span>
+                <span className="text-right text-green-600">Kz{dreData.lucroLiquido.toLocaleString()}</span>
               </div>
             </div>
           </CardContent>
@@ -187,19 +187,19 @@ const FinancialReports = () => {
                   <div className="ml-4 space-y-1">
                     <div className="flex justify-between text-sm">
                       <span>Caixa e Equivalentes</span>
-                      <span>€{balancoData.ativo.circulante.caixa.toLocaleString()}</span>
+                      <span>Kz{balancoData.ativo.circulante.caixa.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Contas a Receber</span>
-                      <span>€{balancoData.ativo.circulante.contasReceber.toLocaleString()}</span>
+                      <span>Kz{balancoData.ativo.circulante.contasReceber.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Estoques</span>
-                      <span>€{balancoData.ativo.circulante.estoques.toLocaleString()}</span>
+                      <span>Kz{balancoData.ativo.circulante.estoques.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between font-medium border-t pt-1">
                       <span>Total Circulante</span>
-                      <span>€{balancoData.ativo.circulante.total.toLocaleString()}</span>
+                      <span>Kz{balancoData.ativo.circulante.total.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -209,22 +209,22 @@ const FinancialReports = () => {
                   <div className="ml-4 space-y-1">
                     <div className="flex justify-between text-sm">
                       <span>Imobilizado</span>
-                      <span>€{balancoData.ativo.naoCirculante.imobilizado.toLocaleString()}</span>
+                      <span>Kz{balancoData.ativo.naoCirculante.imobilizado.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Intangível</span>
-                      <span>€{balancoData.ativo.naoCirculante.intangivel.toLocaleString()}</span>
+                      <span>Kz{balancoData.ativo.naoCirculante.intangivel.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between font-medium border-t pt-1">
                       <span>Total Não Circulante</span>
-                      <span>€{balancoData.ativo.naoCirculante.total.toLocaleString()}</span>
+                      <span>Kz{balancoData.ativo.naoCirculante.total.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex justify-between font-bold text-lg border-t-2 border-gray-300 pt-2">
                   <span>TOTAL DO ATIVO</span>
-                  <span>€{balancoData.ativo.total.toLocaleString()}</span>
+                  <span>Kz{balancoData.ativo.total.toLocaleString()}</span>
                 </div>
               </div>
             </CardContent>
@@ -241,19 +241,19 @@ const FinancialReports = () => {
                   <div className="ml-4 space-y-1">
                     <div className="flex justify-between text-sm">
                       <span>Fornecedores</span>
-                      <span>€{balancoData.passivo.circulante.fornecedores.toLocaleString()}</span>
+                      <span>Kz{balancoData.passivo.circulante.fornecedores.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Contas a Pagar</span>
-                      <span>€{balancoData.passivo.circulante.contasPagar.toLocaleString()}</span>
+                      <span>Kz{balancoData.passivo.circulante.contasPagar.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Impostos a Pagar</span>
-                      <span>€{balancoData.passivo.circulante.impostos.toLocaleString()}</span>
+                      <span>Kz{balancoData.passivo.circulante.impostos.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between font-medium border-t pt-1">
                       <span>Total Circulante</span>
-                      <span>€{balancoData.passivo.circulante.total.toLocaleString()}</span>
+                      <span>Kz{balancoData.passivo.circulante.total.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -263,15 +263,15 @@ const FinancialReports = () => {
                   <div className="ml-4 space-y-1">
                     <div className="flex justify-between text-sm">
                       <span>Empréstimos</span>
-                      <span>€{balancoData.passivo.naoCirculante.emprestimos.toLocaleString()}</span>
+                      <span>Kz{balancoData.passivo.naoCirculante.emprestimos.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Financiamentos</span>
-                      <span>€{balancoData.passivo.naoCirculante.financiamentos.toLocaleString()}</span>
+                      <span>Kz{balancoData.passivo.naoCirculante.financiamentos.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between font-medium border-t pt-1">
                       <span>Total Não Circulante</span>
-                      <span>€{balancoData.passivo.naoCirculante.total.toLocaleString()}</span>
+                      <span>Kz{balancoData.passivo.naoCirculante.total.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -281,26 +281,26 @@ const FinancialReports = () => {
                   <div className="ml-4 space-y-1">
                     <div className="flex justify-between text-sm">
                       <span>Capital Social</span>
-                      <span>€{balancoData.patrimonioLiquido.capital.toLocaleString()}</span>
+                      <span>Kz{balancoData.patrimonioLiquido.capital.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Reservas</span>
-                      <span>€{balancoData.patrimonioLiquido.reservas.toLocaleString()}</span>
+                      <span>Kz{balancoData.patrimonioLiquido.reservas.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Lucros Acumulados</span>
-                      <span className="text-red-600">€{balancoData.patrimonioLiquido.lucrosAcumulados.toLocaleString()}</span>
+                      <span className="text-red-600">Kz{balancoData.patrimonioLiquido.lucrosAcumulados.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between font-medium border-t pt-1">
                       <span>Total Patrimônio Líquido</span>
-                      <span>€{balancoData.patrimonioLiquido.total.toLocaleString()}</span>
+                      <span>Kz{balancoData.patrimonioLiquido.total.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex justify-between font-bold text-lg border-t-2 border-gray-300 pt-2">
                   <span>TOTAL PASSIVO + PL</span>
-                  <span>€{(balancoData.passivo.total + balancoData.patrimonioLiquido.total).toLocaleString()}</span>
+                  <span>Kz{(balancoData.passivo.total + balancoData.patrimonioLiquido.total).toLocaleString()}</span>
                 </div>
               </div>
             </CardContent>

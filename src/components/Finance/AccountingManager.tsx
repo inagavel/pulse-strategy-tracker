@@ -59,7 +59,7 @@ const AccountingManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              €{totalDebito.toLocaleString()}
+              Kz{totalDebito.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -71,7 +71,7 @@ const AccountingManager = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              €{totalCredito.toLocaleString()}
+              Kz{totalCredito.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -130,8 +130,8 @@ const AccountingManager = () => {
                   <th className="text-left py-2">Data</th>
                   <th className="text-left py-2">Conta</th>
                   <th className="text-left py-2">Descrição</th>
-                  <th className="text-right py-2">Débito (€)</th>
-                  <th className="text-right py-2">Crédito (€)</th>
+                  <th className="text-right py-2">Débito (Kz)</th>
+                  <th className="text-right py-2">Crédito (Kz)</th>
                   <th className="text-left py-2">Referência</th>
                 </tr>
               </thead>
@@ -142,10 +142,10 @@ const AccountingManager = () => {
                     <td className="py-2 font-medium">{entry.conta}</td>
                     <td className="py-2">{entry.descricao}</td>
                     <td className="py-2 text-right text-red-600">
-                      {entry.debito > 0 ? `€${entry.debito.toLocaleString()}` : '-'}
+                      {entry.debito > 0 ? `Kz${entry.debito.toLocaleString()}` : '-'}
                     </td>
                     <td className="py-2 text-right text-green-600">
-                      {entry.credito > 0 ? `€${entry.credito.toLocaleString()}` : '-'}
+                      {entry.credito > 0 ? `Kz${entry.credito.toLocaleString()}` : '-'}
                     </td>
                     <td className="py-2">{entry.referencia}</td>
                   </tr>
@@ -154,8 +154,8 @@ const AccountingManager = () => {
               <tfoot>
                 <tr className="border-t-2 border-gray-300 font-bold">
                   <td colSpan={3} className="py-2 text-right">Totais:</td>
-                  <td className="py-2 text-right text-red-600">€{totalDebito.toLocaleString()}</td>
-                  <td className="py-2 text-right text-green-600">€{totalCredito.toLocaleString()}</td>
+                  <td className="py-2 text-right text-red-600">Kz{totalDebito.toLocaleString()}</td>
+                  <td className="py-2 text-right text-green-600">Kz{totalCredito.toLocaleString()}</td>
                   <td className="py-2"></td>
                 </tr>
               </tfoot>
